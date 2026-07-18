@@ -25,8 +25,15 @@ original finding is **UNCONFIRMED** and is escalated, never silently closed.
 - **The verification layer** — `scripts/preflight.py`, the Case A smoke test, the
   offline test suite, and `scripts/eval.py` (scores the engine against the
   hand-authored ground truth and validates every citation as a verbatim substring).
-- **All demo data** — the two hand-authored synthetic hero cases, the templated
-  filler reports, and the captured offline cache.
+- **The whole-chart review pivot** (the headline build) — widened signal
+  extraction, deterministic **entity threading / timeline** reconstruction,
+  per-thread Opus reconciliation (four statuses + the suppress/equivalence wedge),
+  `TOP_N`/abstain surfacing, the **eval harness with a ground-truth manifest**
+  (`safety_net.eval_harness`), and the reasoning-first `ui/render_chart.py` — all
+  built during the event on top of the same engine.
+- **All demo data** — the hand-authored synthetic hero cases, the 14-day synthetic
+  discharge chart + ground-truth manifest, the templated filler, and the captured
+  offline caches.
 
 **Pre-existing / not our original work:**
 
