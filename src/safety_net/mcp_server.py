@@ -11,16 +11,23 @@ from __future__ import annotations
 from fastmcp import FastMCP
 
 from . import actions as _actions
+from . import chart_review as _chart_review
+from . import eval_harness as _eval
 from . import extract as _extract
 from . import reconcile as _reconcile
 from . import sweep as _sweep
 from .models import (
     ActionDraft,
     Candidate,
+    ChartBundle,
+    ExtractedSignal,
+    Note,
     Recommendation,
     ReconciliationResult,
     Report,
+    Thread,
 )
+from .timeline import build_threads as _build_threads
 
 mcp = FastMCP("safety-net")
 
@@ -95,6 +102,59 @@ def approve_action(action: dict, approver: str) -> dict:
         ActionDraft.model_validate(action), approver
     )
     return {"action": approved.model_dump(mode="json"), "audit": event.model_dump(mode="json")}
+
+
+# ======================================================================
+# WHOLE-CHART REVIEW TOOLS — the pivot's capability, exposed as thin tools.
+# Off the live demo path (the UI calls core Python directly); this is the
+# credibility exhibit: the same engine runs over MCP with no EHR integration.
+# ======================================================================
+
+
+@mcp.tool
+def review_chart(use_cache: bool = True) -> dict:
+    """Run the whole-chart discharge review; returns the ChartReviewResult
+    (summary_line, ranked surfaced findings, cleared). Offline via the committed
+    cache by default; set use_cache=false to run Haiku+Opus live."""
+    bundle = _chart_review.load_chart()
+    result = _chart_review.run_review(bundle, use_cache=use_cache)
+    return result.model_dump(mode="json")
+
+
+@mcp.tool
+def evaluate_chart(use_cache: bool = True) -> dict:
+    """Run the eval harness against the ground-truth manifest; returns the
+    live-set gate result + EvalSummary (precision/recall, per-item, suppression
+    traces)."""
+    result, summary, passed = _eval.run_and_evaluate(use_cache=use_cache)
+    return {
+        "passed_gate": passed,
+        "summary_line": result.summary_line,
+        "eval": summary.model_dump(mode="json"),
+    }
+
+
+@mcp.tool
+def extract_chart_signals(note: dict) -> list[dict]:
+    """Extract the atomic signals from one note (Haiku, live)."""
+    signals = _extract.extract_signals(Note.model_validate(note))
+    return [s.model_dump(mode="json") for s in signals]
+
+
+@mcp.tool
+def build_chart_threads(signals: list[dict]) -> list[dict]:
+    """Group extracted signals into threads by entity (deterministic, no LLM)."""
+    sigs = [ExtractedSignal.model_validate(s) for s in signals]
+    return [t.model_dump(mode="json") for t in _build_threads(sigs)]
+
+
+@mcp.tool
+def reconcile_chart_thread(thread: dict, signals: list[dict], chart: dict) -> dict:
+    """Reconcile one thread against the discharge documentation (Opus, live)."""
+    bundle = ChartBundle.model_validate(chart)
+    sigs = {s["signal_id"]: ExtractedSignal.model_validate(s) for s in signals}
+    finding = _reconcile.reconcile_thread(Thread.model_validate(thread), sigs, bundle)
+    return finding.model_dump(mode="json")
 
 
 def main() -> None:
