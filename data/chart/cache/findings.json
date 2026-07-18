@@ -1,0 +1,188 @@
+[
+  {
+    "finding_id": "f_apixaban",
+    "thread_id": "t_apixaban",
+    "title": "Home anticoagulant apixaban held for the drain procedure was never restarted and is absent from the discharge medications",
+    "risk": "High",
+    "status": "UNCONFIRMED",
+    "connection": "Apixaban, a chronic anticoagulant for atrial fibrillation, was held on Day 1 for the percutaneous drain and never restarted. The discharge medication list reconciles the other two home medications (lisinopril, atorvastatin) but omits apixaban with no rationale \u2014 so the omission reads as an oversight, not a decision. No single view connects the Day 1 hold to the Day 14 omission, and there is no order or recommendation for an order-matching system to track; only reading the whole thread reveals an open stroke-prevention loop.",
+    "timeline": [
+      {
+        "day": 1,
+        "note_type": "med_reconciliation",
+        "source_note_id": "n_medrec_d1",
+        "excerpt": "apixaban 5 mg twice daily (for paroxysmal atrial fibrillation)",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 1,
+        "note_type": "progress_note",
+        "source_note_id": "n_hold_d1",
+        "excerpt": "Apixaban held on admission in anticipation of percutaneous drain placement.",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 14,
+        "note_type": "discharge_summary",
+        "source_note_id": "n_dc_d14",
+        "excerpt": "DISCHARGE MEDICATIONS:\n1. Ciprofloxacin 500 mg by mouth twice daily to complete a 10-day course.\n2. Metronidazole 500 mg by mouth three times daily to complete a 10-day course.\n3. Acetaminophen 650 mg by mouth every 6 hours as needed for pain.\n4. Continue home lisinopril 10 mg daily and atorvastatin 40 mg daily.",
+        "evidence_kind": "absence_context"
+      }
+    ],
+    "question": "Was apixaban intentionally discontinued, or should it be restarted at discharge for stroke prevention in atrial fibrillation? If discontinued, where is the rationale documented?",
+    "suggested_action": {
+      "kind": "addendum",
+      "target": "discharge summary",
+      "draft_text": "Clarify apixaban status: held on admission for the percutaneous drain and not restarted. If no bleeding contraindication remains, resume apixaban 5 mg twice daily for atrial fibrillation stroke prevention and document; otherwise document the rationale for discontinuation.",
+      "citation_note_id": "n_hold_d1"
+    },
+    "confidence": 0.9,
+    "surfaced": false,
+    "cleared_reason": null
+  },
+  {
+    "finding_id": "f_colonoscopy_followup",
+    "thread_id": "t_colonoscopy_followup",
+    "title": "GI recommendation for post-diverticulitis colonoscopy is addressed in the PCP letter",
+    "risk": "Low",
+    "status": "CONFIRMED_ADDRESSED",
+    "connection": "The GI consult recommended colonoscopy in 6-8 weeks. It is absent from the structured discharge Follow-up section, but the PCP letter arranges 'lower endoscopy ... in approximately two months' to evaluate the colon after complicated diverticulitis \u2014 the same plan in different words. Loop closed.",
+    "timeline": [
+      {
+        "day": 4,
+        "note_type": "consult_note",
+        "source_note_id": "n_gi_d4",
+        "excerpt": "Given the complicated diverticulitis, recommend outpatient colonoscopy in 6\u20138 weeks after full recovery to exclude an underlying malignancy or stricture.",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 14,
+        "note_type": "pcp_letter",
+        "source_note_id": "n_pcp_d14",
+        "excerpt": "Please arrange for the patient to undergo lower endoscopy with gastroenterology in approximately two months, once he has recovered from this episode, to evaluate the colon following complicated diverticulitis.",
+        "evidence_kind": "presence"
+      }
+    ],
+    "question": "",
+    "suggested_action": null,
+    "confidence": 0.88,
+    "surfaced": false,
+    "cleared_reason": null
+  },
+  {
+    "finding_id": "f_pulmonary_nodule_lll",
+    "thread_id": "t_pulmonary_nodule_lll",
+    "title": "Incidental 9 mm left-lower-lobe pulmonary nodule reported Day 2 never reaches the discharge follow-up plan",
+    "risk": "High",
+    "status": "UNCONFIRMED",
+    "connection": "The Day 2 CT abdomen/pelvis, obtained for the diverticular abscess, incidentally reported a 9 mm solid nodule at the left lung base with an explicit Fleischner recommendation for a 3-month follow-up chest CT. That recommendation sits in the tail of a radiology impression focused on the abdomen; the Day 14 discharge Follow-up section lists colorectal surgery, PCP, and antibiotics but never mentions the nodule or a chest CT. A single-pass discharge review reasoning forward from the diverticulitis problem would not surface a lung finding buried in an abdominal CT report.",
+    "timeline": [
+      {
+        "day": 2,
+        "note_type": "radiology_report",
+        "source_note_id": "n_ct_d2",
+        "excerpt": "Incidental 9 mm solid nodule in the left lower lobe at the lung base. Recommend follow-up chest CT in 3 months to document stability, per Fleischner Society guidelines.",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 14,
+        "note_type": "discharge_summary",
+        "source_note_id": "n_dc_d14",
+        "excerpt": "FOLLOW-UP:\n1. Colorectal surgery in 2 weeks for drain site evaluation.\n2. Primary care physician within 1 week.\n3. Complete the remaining oral antibiotic course as prescribed.",
+        "evidence_kind": "absence_context"
+      }
+    ],
+    "question": "Was the incidental 9 mm left-lower-lobe pulmonary nodule intentionally omitted from the discharge plan, or does it need a scheduled 3-month follow-up chest CT and PCP notification per the Fleischner recommendation?",
+    "suggested_action": {
+      "kind": "addendum",
+      "target": "discharge summary",
+      "draft_text": "Add to the discharge Follow-up plan: incidental 9 mm left lower lobe pulmonary nodule noted on the Day 2 CT with a Fleischner recommendation for a follow-up chest CT in 3 months. Schedule the interval chest CT, notify the PCP, and document tracking so the study is completed.",
+      "citation_note_id": "n_ct_d2"
+    },
+    "confidence": 0.9,
+    "surfaced": false,
+    "cleared_reason": null
+  },
+  {
+    "finding_id": "f_blood_culture_d11",
+    "thread_id": "t_blood_culture_d11",
+    "title": "Blood cultures drawn for the Day 11 fever spike are still pending at discharge with no follow-up plan",
+    "risk": "Medium",
+    "status": "PENDING_AT_DISCHARGE",
+    "connection": "On Day 11 the patient spiked to 38.9\u00b0C and two blood cultures were drawn; the microbiology record reads 'pending.' No later note reports a final culture result, and the discharge summary states the fever resolved but never addresses the outstanding cultures or assigns anyone to follow them up. The result is a live microbiology thread leaving the hospital unowned.",
+    "timeline": [
+      {
+        "day": 11,
+        "note_type": "micro_result",
+        "source_note_id": "n_micro_d11",
+        "excerpt": "Blood cultures x2 drawn for temperature to 38.9\u00b0C. Result: pending.",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 14,
+        "note_type": "discharge_summary",
+        "source_note_id": "n_dc_d14",
+        "excerpt": "He had a single fever spike on hospital Day 11 that resolved with continued therapy.",
+        "evidence_kind": "absence_context"
+      }
+    ],
+    "question": "What did the Day 11 blood cultures ultimately grow, and who is responsible for reviewing the finalized result after discharge if they turn positive?",
+    "suggested_action": {
+      "kind": "pcp_message",
+      "target": "PCP",
+      "draft_text": "Two blood cultures drawn on hospital Day 11 for a fever to 38.9\u00b0C were still pending at discharge. Please ensure the finalized blood culture result is reviewed; if positive, reassess the need for further evaluation or a change in antibiotic therapy.",
+      "citation_note_id": "n_micro_d11"
+    },
+    "confidence": 0.85,
+    "surfaced": false,
+    "cleared_reason": null
+  },
+  {
+    "finding_id": "f_creatinine_series",
+    "thread_id": "t_creatinine_series",
+    "title": "Creatinine rose 0.9 to 1.6 mid-stay and only partially recovered, but no AKI is acknowledged or followed up at discharge",
+    "risk": "Medium",
+    "status": "UNCONFIRMED",
+    "connection": "Serial metabolic panels show creatinine climbing from a Day 1 baseline of 0.9 to a peak of 1.6 on Day 5 (an ~1.8x rise consistent with acute kidney injury) and settling to 1.1 by Day 12 \u2014 still above baseline. Each single value looks unremarkable in isolation, so the slope is only visible across the stay. The discharge diagnoses omit acute kidney injury and the Follow-up section arranges no outpatient renal recheck, so the renal trajectory leaves the hospital unacknowledged.",
+    "timeline": [
+      {
+        "day": 1,
+        "note_type": "lab_result",
+        "source_note_id": "n_labs_d1",
+        "excerpt": "Creatinine 0.9 mg/dL",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 5,
+        "note_type": "lab_result",
+        "source_note_id": "n_labs_d5",
+        "excerpt": "Creatinine 1.6 mg/dL",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 12,
+        "note_type": "lab_result",
+        "source_note_id": "n_labs_d12",
+        "excerpt": "Creatinine 1.1 mg/dL",
+        "evidence_kind": "presence"
+      },
+      {
+        "day": 14,
+        "note_type": "discharge_summary",
+        "source_note_id": "n_dc_d14",
+        "excerpt": "DISCHARGE DIAGNOSES:\n1. Acute complicated sigmoid diverticulitis with pericolonic abscess, status post CT-guided percutaneous drainage.\n2. Paroxysmal atrial fibrillation (chronic).\n3. Hypertension.\n4. Hyperlipidemia.",
+        "evidence_kind": "absence_context"
+      }
+    ],
+    "question": "Should the mid-stay acute kidney injury (creatinine peak 1.6, not back to the 0.9 baseline at discharge) be documented and an outpatient creatinine recheck arranged with the PCP?",
+    "suggested_action": {
+      "kind": "pcp_message",
+      "target": "PCP",
+      "draft_text": "During admission the patient's creatinine rose from a baseline of 0.9 to 1.6 mg/dL and improved to 1.1 by discharge, still above baseline. This transient acute kidney injury was not documented in the discharge diagnoses. Please recheck a basic metabolic panel at the post-discharge visit to confirm return to baseline.",
+      "citation_note_id": "n_labs_d5"
+    },
+    "confidence": 0.75,
+    "surfaced": false,
+    "cleared_reason": null
+  }
+]

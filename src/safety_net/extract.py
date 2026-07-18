@@ -15,8 +15,17 @@ from __future__ import annotations
 import json
 
 from .client import call_json, MODEL_HAIKU
-from .models import ExtractionResult, Recommendation, Report, Study
-from .prompts import EXTRACTION_SYSTEM
+from .models import (
+    ChartBundle,
+    ExtractedSignal,
+    ExtractionResult,
+    Note,
+    Recommendation,
+    Report,
+    SignalType,
+    Study,
+)
+from .prompts import EXTRACTION_SYSTEM, WHOLE_CHART_EXTRACTION_SYSTEM
 
 
 def _format_report(report: Report) -> str:
@@ -86,3 +95,74 @@ def extract_report(report: Report, *, temperature: float = 0.0) -> ExtractionRes
 def extract_reports(reports: list[Report], *, temperature: float = 0.0) -> list[ExtractionResult]:
     """Extract over a backlog of reports (bulk, cheap)."""
     return [extract_report(r, temperature=temperature) for r in reports]
+
+
+# ======================================================================
+# WHOLE-CHART EXTRACTION — widened from "recommendation" to the signal
+# taxonomy (Stage 1 of the whole-chart pipeline). Same discipline as above:
+# the model does the semantic extraction; this module attaches the
+# deterministic identity/source fields and enforces the verbatim-substring
+# rule (reject anything whose excerpt is not an exact substring of the note).
+# ======================================================================
+
+
+def _format_note(note: Note) -> str:
+    return json.dumps(
+        {
+            "note_id": note.note_id,
+            "day": note.day,
+            "author_role": note.author_role,
+            "note_type": note.note_type.value,
+            "body": note.body,
+        },
+        indent=2,
+    )
+
+
+def extract_signals(note: Note, *, temperature: float = 0.0) -> list[ExtractedSignal]:
+    """Extract the atomic signals from a single note (Haiku).
+
+    Every returned signal is guaranteed to have a ``verbatim_excerpt`` that is an
+    exact substring of ``note.body`` — non-matching signals are dropped (the same
+    anti-hallucination discipline the reconciler and harness enforce)."""
+    data = call_json(
+        MODEL_HAIKU,
+        WHOLE_CHART_EXTRACTION_SYSTEM,
+        _format_note(note),
+        max_tokens=2048,
+        temperature=temperature,
+    )
+    raw_signals = data.get("signals") or []
+    signals: list[ExtractedSignal] = []
+    for i, item in enumerate(raw_signals):
+        if not isinstance(item, dict):
+            continue
+        excerpt = _clean(item.get("verbatim_excerpt"))
+        entity = _clean(item.get("entity"))
+        # Enforce the substring rule at the source: silence != a citation.
+        if not excerpt or excerpt not in note.body or not entity:
+            continue
+        try:
+            signal_type = SignalType(_clean(item.get("signal_type")))
+        except ValueError:
+            continue
+        signals.append(
+            ExtractedSignal(
+                signal_id=f"{note.note_id}-sig-{i + 1}",
+                source_note_id=note.note_id,
+                day=note.day,
+                signal_type=signal_type,
+                entity=entity,
+                summary=_clean(item.get("summary")),
+                verbatim_excerpt=excerpt,
+            )
+        )
+    return signals
+
+
+def extract_chart(bundle: ChartBundle, *, temperature: float = 0.0) -> list[ExtractedSignal]:
+    """Bulk-extract signals across every note in the chart."""
+    signals: list[ExtractedSignal] = []
+    for note in bundle.notes:
+        signals.extend(extract_signals(note, temperature=temperature))
+    return signals

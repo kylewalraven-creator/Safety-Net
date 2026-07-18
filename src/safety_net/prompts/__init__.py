@@ -32,16 +32,36 @@ def action_draft_system() -> str:
     return _load("action_draft_system.txt")
 
 
+# ---- Whole-chart review prompts ---------------------------------------
+
+
+def whole_chart_extraction_system() -> str:
+    """The Haiku widened-extraction system prompt (note -> ExtractedSignal[])."""
+    return _load("whole_chart_extraction_system.txt")
+
+
+def whole_chart_reasoning_system() -> str:
+    """The Opus whole-chart reconciliation prompt (verbatim from doc 03 +
+    the two few-shot anchors)."""
+    return _load("whole_chart_reasoning_system.txt")
+
+
 # Eagerly loaded constants for convenience.
 RECONCILIATION_SYSTEM = reconciliation_system()
 EXTRACTION_SYSTEM = extraction_system()
 ACTION_DRAFT_SYSTEM = action_draft_system()
+WHOLE_CHART_EXTRACTION_SYSTEM = whole_chart_extraction_system()
+WHOLE_CHART_REASONING_SYSTEM = whole_chart_reasoning_system()
 
 __all__ = [
     "reconciliation_system",
     "extraction_system",
     "action_draft_system",
+    "whole_chart_extraction_system",
+    "whole_chart_reasoning_system",
     "RECONCILIATION_SYSTEM",
     "EXTRACTION_SYSTEM",
     "ACTION_DRAFT_SYSTEM",
+    "WHOLE_CHART_EXTRACTION_SYSTEM",
+    "WHOLE_CHART_REASONING_SYSTEM",
 ]

@@ -1,0 +1,92 @@
+[
+  {
+    "signal_id": "n_medrec_d1-sig-1",
+    "source_note_id": "n_medrec_d1",
+    "day": 1,
+    "signal_type": "med_recon_gap",
+    "entity": "apixaban",
+    "summary": "Home anticoagulant apixaban for paroxysmal AFib, listed on admission.",
+    "verbatim_excerpt": "apixaban 5 mg twice daily (for paroxysmal atrial fibrillation)"
+  },
+  {
+    "signal_id": "n_hold_d1-sig-1",
+    "source_note_id": "n_hold_d1",
+    "day": 1,
+    "signal_type": "med_recon_gap",
+    "entity": "apixaban",
+    "summary": "Apixaban held on admission for the percutaneous drain.",
+    "verbatim_excerpt": "Apixaban held on admission in anticipation of percutaneous drain placement."
+  },
+  {
+    "signal_id": "n_ct_d2-sig-1",
+    "source_note_id": "n_ct_d2",
+    "day": 2,
+    "signal_type": "incidental_finding",
+    "entity": "pulmonary_nodule_lll",
+    "summary": "Incidental 9 mm LLL pulmonary nodule with a Fleischner 3-month CT recommendation.",
+    "verbatim_excerpt": "Incidental 9 mm solid nodule in the left lower lobe at the lung base. Recommend follow-up chest CT in 3 months to document stability, per Fleischner Society guidelines."
+  },
+  {
+    "signal_id": "n_gi_d4-sig-1",
+    "source_note_id": "n_gi_d4",
+    "day": 4,
+    "signal_type": "consult_recommendation",
+    "entity": "colonoscopy_followup",
+    "summary": "GI recommends outpatient colonoscopy in 6-8 weeks post-diverticulitis.",
+    "verbatim_excerpt": "Given the complicated diverticulitis, recommend outpatient colonoscopy in 6\u20138 weeks after full recovery to exclude an underlying malignancy or stricture."
+  },
+  {
+    "signal_id": "n_micro_d11-sig-1",
+    "source_note_id": "n_micro_d11",
+    "day": 11,
+    "signal_type": "pending_result",
+    "entity": "blood_culture_d11",
+    "summary": "Day 11 blood cultures drawn for a fever spike; result pending.",
+    "verbatim_excerpt": "Blood cultures x2 drawn for temperature to 38.9\u00b0C. Result: pending."
+  },
+  {
+    "signal_id": "n_labs_d1-sig-1",
+    "source_note_id": "n_labs_d1",
+    "day": 1,
+    "signal_type": "trend",
+    "entity": "creatinine_series",
+    "summary": "Creatinine 0.9 (baseline).",
+    "verbatim_excerpt": "Creatinine 0.9 mg/dL"
+  },
+  {
+    "signal_id": "n_labs_d3-sig-1",
+    "source_note_id": "n_labs_d3",
+    "day": 3,
+    "signal_type": "trend",
+    "entity": "creatinine_series",
+    "summary": "Creatinine 1.2 (rising).",
+    "verbatim_excerpt": "Creatinine 1.2 mg/dL"
+  },
+  {
+    "signal_id": "n_labs_d5-sig-1",
+    "source_note_id": "n_labs_d5",
+    "day": 5,
+    "signal_type": "trend",
+    "entity": "creatinine_series",
+    "summary": "Creatinine 1.6 (peak).",
+    "verbatim_excerpt": "Creatinine 1.6 mg/dL"
+  },
+  {
+    "signal_id": "n_labs_d8-sig-1",
+    "source_note_id": "n_labs_d8",
+    "day": 8,
+    "signal_type": "trend",
+    "entity": "creatinine_series",
+    "summary": "Creatinine 1.4 (improving).",
+    "verbatim_excerpt": "Creatinine 1.4 mg/dL"
+  },
+  {
+    "signal_id": "n_labs_d12-sig-1",
+    "source_note_id": "n_labs_d12",
+    "day": 12,
+    "signal_type": "trend",
+    "entity": "creatinine_series",
+    "summary": "Creatinine 1.1 (near baseline).",
+    "verbatim_excerpt": "Creatinine 1.1 mg/dL"
+  }
+]
