@@ -1,154 +1,147 @@
-# Safety Net — Demo Script (live 3-min + Q&A)
+# Safety Net — Whole-Chart Review — Demo Script (live 3-min + Q&A)
 
 ## Summary — read this first
-- **What it is:** Safety Net — a retrospective diagnostic-safety agent that sweeps a backlog of *correct* radiology reports and surfaces the follow-up recommendations that were never actually addressed, each with a verbatim citation and a specific, human-answerable question.
-- **Who's presenting:** you deliver this in the **first-person voice of a practicing physician** — the pain is *yours*, not a vendor's. It grounds every claim in "this is what happens to my patients."
-- **The arc (~2:50):** cold open (the failure) → **Hero A** *looks closed, isn't* → escalate → **Hero B** *looks open, is closed* → suppress → one human-approved action → fixed close.
-- **The two heroes:** A = a 9 mm left-upper-lobe nodule an order-matcher "closes" on a later chest CT that never mentions it → **ESCALATE**. B = a nodule flagged overdue by date logic, but a later PET/CT already called it benign → **SUPPRESS** (no false alarm).
-- **On screen:** one static page; the only live interaction is the **Approve** button on Hero A. If the network dies, the cached render is byte-identical — keep talking.
-- **"Why an agent" (reflex answer):** multi-step reasoning over messy documents — it reconciles each finding across five axes and drafts the outreach; it's not a keyword match or a date check.
-- **The close (never cut it):** *"Every report here was right. The system around it failed. We built the system."*
+- **What it is:** Safety Net reviews an entire **14-day inpatient admission at discharge** and surfaces the threads that fell through — each with a verbatim citation and a specific, human-answerable question — while **suppressing** look-alikes that were actually closed in different words.
+- **The frame:** **discharge isn't the finish line — it's the start of the patient's journey home.** The discharge summary is written *forward* from today's problem list; nobody re-reads all 14 days at the one moment it matters. Safety Net does, then notifies the clinician (and, optionally, the patient).
+- **Who's presenting:** first-person voice of a **practicing physician** — "my patient," "this scares me." Not a vendor pitch.
+- **The arc (~2:50):** cold open (discharge = start) → the chart sweep → **Hero: held anticoagulant never restarted** (escalate) → **a value that crossed a threshold** (creatinine trend, unacknowledged) → **suppress** (colonoscopy already closed in the PCP letter) → one human-approved notification → close.
+- **On screen (`ui/whole_chart.html`):** one page — bookend *"4 unreconciled threads across a 14-day stay,"* findings ranked by consequence with **risk + status** pills, each with its cross-day **timeline of verbatim citations**, a specific **question**, and a drafted **action**; a collapsed **CLEARED** section (the suppressed look-alike); one live **Approve** button.
+- **Measured, not vibes:** `python -m safety_net.eval_harness` → **precision 1.0**, suppress correct, **9/9 citations validated** as exact substrings. Say it out loud.
+- **"Why an agent" (reflex):** it reads every note across 14 days and reasons about *acknowledgment* across time and domain — no order to match, no keyword to grep. Code where it must be reliable; the model where it must reason.
+- **The close (never cut it):** *"The chart had the answer the whole time. No one had read all of it. Now something has."*
 
 ---
 
 ## How to use this
-- **Specifics are filled from the real hero cases** (`data/heroes/case_a.json`, `case_b.json`) so the narration matches exactly what renders on screen. If you edit the hero JSON, re-check the numbers here.
-- **The UI is a single static page** (`ui/index.html`), not a click-through. Everything — both cases, the five-axis traces, the highlighted evidence, the escalation question, the drafted action — is pre-rendered and visible on load. The **only** interactive element is the **Approve** button on Case A. The beats below map to *scroll-and-point* regions of that one page, not to clicks. Rehearse the scroll path and where you point.
-- **If the live API call hangs, flip to the cached response and keep talking** — the narration is identical, only the source of the result changes. Don't call attention to it. If everything dies, the 1-min video is queued as the ultimate fallback.
-- **Deliver in the first-person voice of a physician** — the narration is a clinician describing a failure they see on their own patients, not a vendor pitching a product. Say "my patients," "I've had this happen." If two of you present, keep that single physician voice consistent across the handoffs; rehearse them.
-- **Rehearse to ~2:50** so you have buffer. The close line is fixed — never cut it, never rush it.
-- **Tone for the room (Ricci is in it):** when you reference "order-matching," say it neutrally — it describes real, good products, including his old one. The contrast is an honest technical distinction, not a takedown. Confidence without arrogance; precision over hype.
+- **Matches the built whole-chart UI.** Render offline first: `python ui/render_chart.py` → open `ui/whole_chart.html`. The page makes **zero network calls**, so wifi loss is survivable. Beats below are *scroll-and-point*; the only live interaction is the **Approve** button.
+- **If a live call hangs, flip to the cached render and keep talking** — identical output, from `data/chart/cache/`. If everything dies, the 1-min video is the ultimate fallback.
+- **Deliver in the first-person voice of a physician** — "my patient," "I've watched this happen." If two of you present, keep one consistent clinician voice across handoffs.
+- **Rehearse to ~2:50** with buffer. The close line is fixed — never cut it, never rush it.
+- **Tone for the room (Ricci is in it):** reference "order-matching" and "keyword checkers" neutrally — they describe real, good products. The contrast is an honest technical distinction, not a takedown.
+- **Two-hero radiology demo is the fallback** — see `docs/demo-script-two-hero.md` (fully scripted, `ui/render.py`) if you need to pivot back.
 
 ---
 
 ## THE SCRIPT
 
-### Cold open — establish the failure (0:00–0:15)
-[Screen: a **pre-recorded** clip of the sweep's tool-call lines streaming, or simply the cached `index.html` at the top — **never a live sweep** (the page makes zero network calls, so wifi loss is survivable). Land on the header + bookend line.]
+### Cold open — discharge is the start, not the end (0:00–0:20)
+[Screen: a **pre-recorded** clip of `chart_review` streaming, or the cached `whole_chart.html` at the top — **never a live run**. Land on the header + bookend line.]
 
-> "I'm a physician. Every year, patients get harmed — not because a scan was misread, but because a follow-up buried in a *correct* report was never acted on. Studies routinely find fewer than half of recommended follow-up imaging is ever completed. I've watched it happen."
+> "I'm a physician. When I discharge a patient after a two-week admission, that's not the finish line — it's the *start* of their journey home. But the discharge summary gets written *forward* from today's problem list. Nobody re-reads all fourteen days — every note, every lab, every consult — at the one moment it matters most."
 
-*(Have a citable source for that statistic ready — a domain expert will ask. If you can't source it live, drop the number and keep the sentence.)*
+[Point at the bookend line: *"4 unreconciled threads across a 14-day stay."*]
 
-[Point at the bookend line: "Swept 10 finished reports · 2 hero recommendation(s) reconciled live."]
+> "Safety Net does. It read this patient's entire chart at discharge and found four threads that fell through — and stayed silent on everything that was actually handled."
 
-> "This is a backlog of finished reports — ten here so you can see it, but the sweep runs the same over ten thousand. Every one read correctly. My agent read them all and asked the question no one has time to: not whether the scan got done, but whether the finding was ever looked at again. Two fell through — here's the first."
+*(That's the thesis. Land it, then go straight to the hero.)*
 
-*(Thesis landed. Move straight to Hero A — aim to have the escalate reveal on screen by ~0:45.)*
+### Hero beat — the held anticoagulant (0:20–1:20)
+[Scroll to the first finding: **High / UNCONFIRMED** — "Home anticoagulant apixaban … never restarted."]
 
-### Hero beat — Case A: looks closed, isn't (0:15–1:35)
-[Scroll to the first case: "Looks closed, isn't (escalate)" — Margaret Ellison · PT-A-2213. Point at the source report (highlighted).]
+> "Here's the one that scares me. This patient came in on apixaban — a blood thinner for atrial fibrillation."
 
-> "Here's one. October 2024: a 9 mm nodule in the left upper lobe. The radiologist recommended a follow-up CT chest in six months."
+[Point at the Day 1 citations — the med-rec line, then the hold note.]
 
-> "An order-matching tracker asks one question — was a chest CT done? And one was."
+> "Day 1, we held it for his drain procedure — completely appropriate. But then —"
 
-[Point at the later study card — the March 2025 chest CT.]
+[Point at the Day 14 discharge-medications gap citation.]
 
-> "March 2025, a chest CT. Order matched, loop closed, case closed. That's how order-matching works."
+> "— the discharge list continues his *other* home meds and just… drops the apixaban. No rationale. He's going home off stroke prevention, and in a normal discharge nothing flags it."
 
-*(Beat. Then:)*
+> "This is why it has to be an *agent*, not a rule: there's no order and no recommendation to match — only a loop across three documents and fourteen days that nobody closed. Safety Net connects them and asks the exact question a human can answer:"
 
-> "Watch what our agent does instead."
+[Point at the question; read it.]
 
-[Point at the five-axis reasoning trace, already rendered below the reports.]
+> "'Was apixaban intentionally discontinued, or should it be restarted at discharge for stroke prevention?'"
 
-> "This is why it has to be an agent, not a rule: it *reads* both reports and reasons about whether the second actually addressed the first — across five axes. Modality: a chest CT can assess a nodule — pass. Anatomy: it covered the left upper lobe — pass. But acknowledgment —"
+*(Beat. This is the moment — highest, most acute stakes. Let it sit.)*
 
-*(Pause. Point at the highlighted March 2025 report — nothing about the nodule is marked.)*
+### Threshold beat — the value that drifted (1:20–1:45)
+[Scroll to the **Medium / UNCONFIRMED** creatinine finding.]
 
-> "— the March 2025 scan never mentions the nodule. It was a PE study, ordered for shortness of breath and cough. It imaged the lung, but nobody looked at the nodule."
+> "It isn't only medications. Safety Net also walks the labs for values that crossed a threshold and were never acknowledged. His creatinine rose from 0.9 to 1.6 mid-stay —"
 
-[Point at the closure banner — it reads "Closure state: ESCALATE".]
+[Point at the Day 1 → Day 5 → Day 12 lab citations.]
 
-> "So the agent doesn't close it. It escalates — with the exact question a human needs to answer:"
+> "— each single value looked unremarkable in the moment; the *slope* is the signal. No kidney injury on the discharge problem list, no recheck arranged. It caught the trend across days and flagged an outpatient creatinine recheck for the PCP."
 
-[Point at the escalation box; read it. (Exact wording is model-generated — read what's on screen; it will name the March 2025 CT and the October 2024 nodule.)]
+### Contrast beat — suppress the false alarm (1:45–2:15)
+[Scroll to the **CLEARED** section — the colonoscopy thread.]
 
-> "'A chest CT was performed in March 2025 but doesn't mention the October 2024 left-upper-lobe nodule — was it reassessed? Confirm or deny.'"
+> "Now the discipline — because a tool that cries wolf is worse than nothing. The GI team recommended a colonoscopy after this diverticulitis. It is *not* in the structured discharge plan, so a keyword checker fires a false alarm."
 
-*(Beat — this is the moment. Let it sit.)*
+[Point at the cleared item's citation — the PCP letter.]
 
-> "That's the difference. A scan being *done* is not the same as the finding being *addressed*. That gap is where patients fall through — and it's invisible to anything that just matches orders."
+> "But Safety Net read the PCP letter — 'lower endoscopy in about two months' — recognized that's the same plan in different words, and stayed silent. Cleared, with the receipt. Catching real misses and suppressing false ones is the same capability: reasoning about what actually happened, not matching strings."
 
-### Contrast beat — Case B: looks open, is closed (1:40–2:20)
-[Scroll to the second case: "Looks open, is closed (suppress)" — Harold Nkemelu · PT-B-7749. Point at the rec-sub line — it reads "naive date logic: OVERDUE".]
+### Action beat — notify, human-gated (2:15–2:45)
+[Scroll back to the apixaban finding's drafted action. This is the one real click.]
 
-> "Now the opposite failure. June 2024: an 11 mm nodule in the right middle lobe, follow-up CT recommended in three months. This patient's flagged overdue by simple date logic — the window's passed, no matching CT. An alarm-based system pages the care team right now."
+> "For every real miss it drafts the notification — an addendum for the discharging team, a message to the PCP, and optionally patient outreach — but it sends nothing on its own. A clinician reviews and approves."
 
-[Point at the highlighted PET/CT card — the September 2024 study.]
+[CLICK — Approve. The audit line appears; the button disables.]
 
-> "But our agent finds this —"
+> "Approved, logged, audit trail intact. Autonomous where it's safe — reading fourteen days of chart no human has time to re-read. Human-gated where it matters — anything that touches the patient. It's an MCP server, so it runs on the discharge with no new workflow and no new headcount — it's safety capacity the system can't hire for. And because the reasoning *is* the model, it gets sharper every time Claude does."
 
-*(Point at the highlighted benign line.)*
+*(Credibility, ~8s — first to cut if over time.)*
+> "And this isn't a vibe — we measured it: on our ground truth, precision 1.0, zero false alarms, and every quote on screen is an exact substring of the source, checked automatically. Nine of nine."
 
-> "— a PET/CT three months later that characterized the same 11 mm nodule as benign. The question's already answered."
-
-[Point at the closure banner — it reads "Closure state: SUPERSEDED".]
-
-> "So it closes the loop and stays silent. No false alarm."
-
-*(Beat.)*
-
-> "Catching real misses and suppressing false ones is the same capability — reasoning about what actually happened, not pattern-matching dates and orders. And this half is the one an order-matcher can't do: there's no order to match, so it either pages a false alarm or stays blind. Reasoning is what lets us stay quiet here."
-
-### Action beat — human-gated closure (2:20–2:50)
-[Scroll back up to Case A's drafted action (labeled "Drafted … (human-gated)"). This is the one real click in the demo.]
-
-> "Back to the patient who fell through. The agent drafts the outreach to re-engage them — but it doesn't send anything on its own. A clinician reviews and approves."
-
-[CLICK — the Approve button. The audit line appears and the button disables.]
-
-> "Approved, logged, audit trail intact. Autonomous where it's safe — reading and reasoning. Human-gated where it matters — anything that touches a patient. And because it's all an MCP server, it runs on this backlog with no EHR integration. It could run on yours Monday."
-
-### Close (2:50–3:00)
+### Close (2:45–3:00)
 *(Stop moving. Look up. Deliver clean, then stop talking.)*
 
-> "Every report here was right. The system around it failed. We built the system."
+> "The chart had the answer the whole time. No one had read all of it. Now something has."
 
 ---
 
-## Q&A (rehearse these — ~15–20 sec each; answer the question, then stop)
+## Q&A (rehearse — ~15–20 sec each; answer, then stop)
 
-**"How is this different from Rad AI Continuity / PowerScribe Follow-up Manager?"**
-> "Order-matching systems confirm a scan was *ordered and done* — that's genuinely useful. But two things they structurally can't do: catch a later scan that imaged the area yet never mentions the finding, and *suppress* a false alarm when the finding was already resolved in different words. You just saw both — the escalate and the suppress. The wedge is reasoning about acknowledgment, not matching orders."
+**"Isn't this just a discharge checklist / problem-list checker?"**
+> "A checker matches strings against the problem list. We reason about *acknowledgment across time and domain* — a held med that was never restarted, a lab slope no single value flags, a consult rec that's closed in the discharge letter in different words. We proved it both directions: we escalate the real miss and *suppress* the look-alike a checker would false-alarm on."
 
-**"What's your false-negative rate — what about the ones you miss?"**
-> "We don't silently close anything ambiguous. If we can't confirm a finding was addressed, it escalates with a specific question instead of closing. The goal isn't perfect extraction — it's making misses *visible* instead of losing them. A miss surfaces as a question, not a silent closure."
+**"Why does this need to be an agent, not a scripted pipeline?"**
+> "The orchestration *is* deterministic on purpose — loading notes, threading entities, ranking. The hard part is open-ended reasoning: does this later note actually close this thread, possibly in different words? No rule captures that. Code where it should be reliable, the model where it must reason."
 
-**"Can you really trust an LLM for this clinically?"**
-> "It's not diagnosing or recommending treatment. It's reasoning about document equivalence — did study B address finding A — and every verdict has a verbatim citation behind it a clinician can verify in one click. It's a reconciliation engine with an audit trail, not an autonomous clinician."
+**"What happens when it's wrong? A hallucinated finding could hurt someone."**
+> "It never closes or decides — it surfaces a question with the evidence and a human approves any action. Every claim carries a verbatim citation validated automatically as an exact substring of a source note; unvalidated claims are dropped. Nine of nine on our set, zero hallucinated."
 
-**"Is this real data or synthetic?"**
-> "Synthetic — hand-authored to show the reasoning cleanly, no PHI. The pipeline's real; on actual reports the extraction and reconciliation run identically."
+**"How do you know it's right — did you measure anything?"**
+> "Yes — the chart is hand-authored, so the planted threads are ground truth, and our eval harness scores against them: precision 1.0 on the surfaced set, the suppress case correctly cleared, all citations validating. It's a reproducible gate, not a vibe."
 
-**"Does this generalize beyond radiology?"**
-> "The reasoning is specialty-agnostic — the same five-axis logic applies to a pathology re-excision or a GI surveillance interval; only the clinical taxonomy changes. We built radiology as the beachhead because it's the best-documented, but nothing in the architecture is radiology-specific."
+**"What did you build today vs. what pre-existed?"**
+> "Everything in the repo — the whole-chart pipeline, entity threading, the reasoning prompt, the eval harness, the UI — built today; here's the public repo. We reuse the Anthropic SDK, Pydantic, FastMCP, and Claude. All data is synthetic, no PHI."
 
-**"Won't this create alert fatigue?"**
-> "We just showed the answer — the same reasoning that catches misses suppresses false alarms. We only surface what we genuinely can't confirm, not everything that's technically overdue."
+**"HIPAA / PHI — where does the data go?"**
+> "Demo is fully synthetic. In production it runs inside the covered boundary — the same place ambient documentation already lives — no data leaves a safe path."
 
-**"How much of this did you build today?"**
-> "All of it — here's the public repo. The agent pipeline and the reconciliation reasoning are the work; the data we authored today to demo it."
+**"Where does this sit in the clinician's day / who pushes the button?"**
+> "It runs at discharge on the chart that's already there — no new workflow. It produces a short, ranked queue of questions; the clinician answers or approves. Optionally the approved outreach goes to the patient."
+
+**"As Claude gets smarter, does this get better or does your edge vanish?"**
+> "Better — the reconciliation *is* the model's reasoning, so every capability gain raises our precision and recall directly. We're a harness around frontier reasoning, not a workaround for its limits."
+
+**"Are you replacing clinical judgment?"**
+> "Supporting it. We never decide; we surface an unclosed loop with the evidence and ask. The human stays in control of everything that touches the patient."
+
+**"What breaks on a real, messy Epic/Cerner chart?"**
+> "Extraction is the fragile part — which is exactly why every finding is grounded in a verbatim citation and we escalate-not-close under ambiguity. Messiness degrades to a question, never a false closure."
 
 *If you don't know an answer: say the honest version and offer to follow up. Never bluff a domain expert.*
 
 ---
 
 ## 1-minute video cut (condensed — record after the freeze)
-*(Visuals: cut between four regions of the static page — (1) the bookend line, (2) Case A's five-axis trace + escalation box, (3) Case B's SUPERSEDED banner, (4) the Approve click on Case A. Record the voiceover separately and cut visuals to it.)*
+*(Visuals: cut between four regions of `whole_chart.html` — the bookend, the apixaban finding + question, the creatinine trend, the CLEARED colonoscopy — then the Approve click.)*
 
-> "Patients are harmed when a follow-up buried in a *correct* radiology report is never acted on. [sweep] Our agent reads a backlog of finished reports and pulls every recommendation. Here's one — an October 2024 lung nodule, 9 mm in the left upper lobe, follow-up CT recommended. A chest CT was done in March 2025, so an order-matching tracker closes the case. But our agent checks whether the nodule was actually *addressed*: modality and anatomy pass — but that March scan never mentions the nodule. So it doesn't close it. It escalates with the exact question: was the nodule reassessed? [Case B] It also suppresses false alarms — an 11 mm nodule flagged overdue, but a benign PET/CT here means no page. [action] For real misses, it drafts the outreach for a clinician to approve — human-gated, fully audited. It's an MCP server, so it runs with no EHR integration. Every report was right. The system around it failed. We built the system."
+> "Discharge isn't the end of a hospital stay — it's the start of the patient's journey home, and it's where things fall through. No clinician re-reads all fourteen days of a chart at that moment. Safety Net does. [bookend] On this admission it found four threads that fell through. Here's the one that matters: this patient's blood thinner for atrial fibrillation was held for a procedure Day 1 — and never restarted. The discharge list keeps his other meds but drops it. He's going home off stroke prevention, and nothing flagged it. No order to match — Safety Net connected three documents across the stay and asks: should apixaban be restarted? [creatinine] It also caught a kidney-function trend no single value flags, and [cleared] it *suppressed* a colonoscopy 'miss' that was actually closed in the PCP letter — reasoning, not keyword-matching. Precision 1.0, every citation verbatim. It drafts the notification; a clinician approves; nothing sends itself. The chart had the answer the whole time. No one had read all of it. Now something has."
 
 ---
 
 ## Pre-flight checklist (verify before you walk into the room)
-- [ ] Both hero cases produce the right verdict live **and** from cache (A → `Closure state: ESCALATE` + question; B → `Closure state: SUPERSEDED`).
-- [ ] The escalation question text reads cleanly and names Case A's specifics (March 2025 CT / October 2024 left-upper-lobe nodule). It's model-generated — read what's actually on screen, not this doc's example.
-- [ ] Evidence highlighting lands on the right source text in both cases (no whitespace/quote mismatch) — especially the "no mention of the nodule" gap in Case A's March 2025 report.
-- [ ] The bookend line renders a real count ("Swept 10 finished reports · 2 hero recommendation(s) reconciled live") — not a placeholder.
-- [ ] The **Approve** button on Case A works (reveals the audit line, disables itself).
-- [ ] The scroll path — bookend → Case A → Case B → back to Case A's action — runs without a dead end.
-- [ ] Cached-fallback works with wifi off (populate `data/cache/` first via `python -m safety_net.sweep --write-cache`).
+- [ ] `python -m safety_net.eval_harness` is **green** (precision 1.0, suppress cleared, citations valid) — and you can quote the numbers.
+- [ ] `ui/whole_chart.html` renders offline from `data/chart/cache/` with the bookend, all four surfaced findings, the CLEARED section, and a working **Approve** button.
+- [ ] The apixaban timeline highlights land on all three citations (Day 1 med-rec, Day 1 hold, Day 14 discharge-meds gap).
+- [ ] The creatinine trend shows the Day 1 / Day 5 / Day 12 values.
+- [ ] The colonoscopy thread is in **CLEARED**, cited to the PCP letter (the suppress proof).
+- [ ] The cold-open clip is **pre-recorded** (no live run on stage).
+- [ ] You can deliver in ≤3:00 with the close line intact.
 - [ ] 1-min video renders and its link opens logged-out.
-- [ ] You can deliver the whole thing in ≤3:00 with the close line intact.
