@@ -23,22 +23,20 @@
 
 ## THE SCRIPT
 
-### Cold open — establish the failure (0:00–0:20)
-[Screen: the terminal running `python -m safety_net.sweep`, tool-call lines streaming — this is the "reading the backlog" shot. Then cut to the top of `index.html`: header + the bookend line.]
+### Cold open — establish the failure (0:00–0:15)
+[Screen: a **pre-recorded** clip of the sweep's tool-call lines streaming, or simply the cached `index.html` at the top — **never a live sweep** (the page makes zero network calls, so wifi loss is survivable). Land on the header + bookend line.]
 
-> "I'm a physician. Every year, patients get harmed — not because a scan was misread, but because a follow-up recommendation buried in a *correct* report was never acted on. I've watched it happen."
+> "I'm a physician. Every year, patients get harmed — not because a scan was misread, but because a follow-up buried in a *correct* report was never acted on. Studies routinely find fewer than half of recommended follow-up imaging is ever completed. I've watched it happen."
 
-[The sweep finishes; the page's bookend line reads "Swept 10 finished reports · 2 hero recommendation(s) reconciled live."]
+*(Have a citable source for that statistic ready — a domain expert will ask. If you can't source it live, drop the number and keep the sentence.)*
 
-> "This is a backlog of finished radiology reports. Every one was read correctly. Our agent read all of them and pulled out every follow-up recommendation."
+[Point at the bookend line: "Swept 10 finished reports · 2 hero recommendation(s) reconciled live."]
 
-[Point at the bookend line.]
+> "This is a backlog of finished reports — ten here so you can see it, but the sweep runs the same over ten thousand. Every one read correctly. My agent read them all and asked the question no one has time to: not whether the scan got done, but whether the finding was ever looked at again. Two fell through — here's the first."
 
-> "The real question isn't whether these scans got done — it's whether the finding was ever actually looked at again. Here are the two that matter."
+*(Thesis landed. Move straight to Hero A — aim to have the escalate reveal on screen by ~0:45.)*
 
-*(That last line is your thesis. Land it, then move.)*
-
-### Hero beat — Case A: looks closed, isn't (0:20–1:40)
+### Hero beat — Case A: looks closed, isn't (0:15–1:35)
 [Scroll to the first case: "Looks closed, isn't (escalate)" — Margaret Ellison · PT-A-2213. Point at the source report (highlighted).]
 
 > "Here's one. October 2024: a 9 mm nodule in the left upper lobe. The radiologist recommended a follow-up CT chest in six months."
@@ -55,7 +53,7 @@
 
 [Point at the five-axis reasoning trace, already rendered below the reports.]
 
-> "It checks whether that later scan actually *addressed* the nodule — across five axes. Modality: a chest CT can assess a nodule — pass. Anatomy: it covered the left upper lobe — pass. But acknowledgment —"
+> "This is why it has to be an agent, not a rule: it *reads* both reports and reasons about whether the second actually addressed the first — across five axes. Modality: a chest CT can assess a nodule — pass. Anatomy: it covered the left upper lobe — pass. But acknowledgment —"
 
 *(Pause. Point at the highlighted March 2025 report — nothing about the nodule is marked.)*
 
@@ -92,7 +90,7 @@
 
 *(Beat.)*
 
-> "Catching real misses and suppressing false ones is the same capability — reasoning about what actually happened, not pattern-matching dates and orders."
+> "Catching real misses and suppressing false ones is the same capability — reasoning about what actually happened, not pattern-matching dates and orders. And this half is the one an order-matcher can't do: there's no order to match, so it either pages a false alarm or stays blind. Reasoning is what lets us stay quiet here."
 
 ### Action beat — human-gated closure (2:20–2:50)
 [Scroll back up to Case A's drafted action (labeled "Drafted … (human-gated)"). This is the one real click in the demo.]
@@ -113,7 +111,7 @@
 ## Q&A (rehearse these — ~15–20 sec each; answer the question, then stop)
 
 **"How is this different from Rad AI Continuity / PowerScribe Follow-up Manager?"**
-> "They match orders and track appointments — they'll tell you a chest CT was scheduled and done. We reason about whether the finding was actually *addressed*. The nodule that never got mentioned is invisible to order-matching — and that's exactly the case we catch. That distinction is the failure mode."
+> "Order-matching systems confirm a scan was *ordered and done* — that's genuinely useful. But two things they structurally can't do: catch a later scan that imaged the area yet never mentions the finding, and *suppress* a false alarm when the finding was already resolved in different words. You just saw both — the escalate and the suppress. The wedge is reasoning about acknowledgment, not matching orders."
 
 **"What's your false-negative rate — what about the ones you miss?"**
 > "We don't silently close anything ambiguous. If we can't confirm a finding was addressed, it escalates with a specific question instead of closing. The goal isn't perfect extraction — it's making misses *visible* instead of losing them. A miss surfaces as a question, not a silent closure."

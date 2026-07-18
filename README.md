@@ -13,6 +13,32 @@ original finding is **UNCONFIRMED** and is escalated, never silently closed.
 > [`docs/build-status.md`](docs/build-status.md) (current status, decisions, next
 > steps). The live demo is scripted in [`docs/demo-runbook.md`](docs/demo-runbook.md).
 
+## Built during the hackathon (July 18, 2026)
+
+**Everything in this repository was built during the event.** Specifically:
+
+- **The entire Safety Net pipeline** — the frozen finding/reconciliation JSON
+  contract (`models.py`), the Anthropic client + system prompts, Haiku bulk
+  extraction, the Opus five-axis reconciliation engine, action-drafting, the
+  deterministic sweep orchestration, the thin FastMCP wrapper, and the
+  reasoning-first UI render.
+- **The verification layer** — `scripts/preflight.py`, the Case A smoke test, and
+  the offline test suite.
+- **All demo data** — the two hand-authored synthetic hero cases, the templated
+  filler reports, and the captured offline cache.
+
+**Pre-existing / not our original work:**
+
+- **Libraries:** the Anthropic Python SDK, Pydantic, FastMCP, python-dotenv.
+- **Models:** Claude Opus 4.8 and Claude Haiku 4.5, called via the Anthropic API.
+- **No Abridge production code or proprietary tooling is used.** All data is
+  synthetic and contains **no PHI**.
+
+> **Note on `data/synthetic-ambient-fhir-25/`:** a separate synthetic Synthea/LLM-
+> generated FHIR dataset, included as a supporting asset. It is **not consumed by
+> the Safety Net demo pipeline** — the demo runs on `data/heroes/` and
+> `data/filler/`.
+
 ## Architecture (two sentences)
 
 A deterministic, code-orchestrated backlog sweep loads reports and runs a
