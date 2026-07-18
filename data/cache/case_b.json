@@ -1,0 +1,97 @@
+[
+  {
+    "recommendation": {
+      "id": "B-R1-rec-1",
+      "source_id": "B-R1",
+      "report_date": "2024-06-15",
+      "finding": "11 mm solid nodule in the right middle lobe",
+      "anatomic_site": "right middle lobe",
+      "recommended_modality": "CT chest",
+      "recommended_timeframe": "3 months",
+      "urgency_tier": "routine",
+      "original_text": "Recommend follow-up CT chest in 3 months to evaluate for interval change."
+    },
+    "patient_id": "PT-B-7749",
+    "candidates": [
+      {
+        "id": "B-R2",
+        "report_date": "2024-09-22",
+        "modality": "PET/CT skull base to mid-thigh",
+        "anatomic_coverage": "skull base to mid-thigh",
+        "impression_text": "No hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule; findings favor a benign etiology. No evidence of FDG-avid malignancy.",
+        "full_text": "EXAM: PET/CT SKULL BASE TO MID-THIGH\nDATE: 2024-09-22\nHISTORY: 64-year-old with an indeterminate right middle lobe pulmonary nodule; evaluate metabolic activity.\n\nTECHNIQUE: Whole-body FDG PET/CT from skull base to mid-thigh following administration of F-18 FDG.\n\nFINDINGS:\nThere is no hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule. No FDG-avid pulmonary, mediastinal, or hilar disease. No other focal hypermetabolic abnormality.\n\nIMPRESSION:\nNo hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule; findings favor a benign etiology. No evidence of FDG-avid malignancy."
+      }
+    ],
+    "reconciliation": {
+      "recommendation_id": "B-R1-rec-1",
+      "candidate_assessments": [
+        {
+          "study_id": "B-R2",
+          "verdict": "SUPERSEDES",
+          "axes": {
+            "modality_adequacy": {
+              "result": "superior",
+              "reason": "PET/CT exceeds the recommended CT chest and characterizes metabolic activity of the nodule.",
+              "evidence": [
+                {
+                  "source_id": "B-R2",
+                  "quote": "EXAM: PET/CT SKULL BASE TO MID-THIGH"
+                }
+              ]
+            },
+            "anatomic_coverage": {
+              "result": "pass",
+              "reason": "Whole-body coverage from skull base to mid-thigh includes the right middle lobe.",
+              "evidence": [
+                {
+                  "source_id": "B-R2",
+                  "quote": "no hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule"
+                }
+              ]
+            },
+            "finding_acknowledgment": {
+              "result": "pass",
+              "reason": "Explicitly addresses the specific 11 mm right middle lobe nodule from the prior report.",
+              "evidence": [
+                {
+                  "source_id": "B-R2",
+                  "quote": "the previously noted 11 mm right middle lobe nodule"
+                }
+              ]
+            },
+            "temporal_adequacy": {
+              "result": "on_time",
+              "reason": "Performed ~3.2 months after the recommendation, within the intended 3-month window.",
+              "evidence": [
+                {
+                  "source_id": "B-R2",
+                  "quote": "DATE: 2024-09-22"
+                }
+              ]
+            },
+            "terminal_event": {
+              "result": "present",
+              "type": "benign",
+              "reason": "Findings favor a benign etiology with no FDG-avid malignancy, closing the follow-up question.",
+              "evidence": [
+                {
+                  "source_id": "B-R2",
+                  "quote": "findings favor a benign etiology; No evidence of FDG-avid malignancy."
+                }
+              ]
+            }
+          },
+          "confidence": "high",
+          "rationale": "A superior PET/CT explicitly characterized the specific nodule as favoring benign etiology with no hypermetabolic activity, closing the loop despite the original CT recommendation."
+        }
+      ],
+      "closure_state": "superseded",
+      "escalation": {
+        "required": false,
+        "question": null
+      }
+    },
+    "overdue": true,
+    "action": null
+  }
+]

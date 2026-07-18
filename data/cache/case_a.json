@@ -1,0 +1,100 @@
+[
+  {
+    "recommendation": {
+      "id": "A-R1-rec-1",
+      "source_id": "A-R1",
+      "report_date": "2024-10-08",
+      "finding": "Solid 9 mm nodule in the left upper lobe",
+      "anatomic_site": "left upper lobe",
+      "recommended_modality": "CT chest",
+      "recommended_timeframe": "6 months",
+      "urgency_tier": "routine",
+      "original_text": "Recommend follow-up CT chest in 6 months to assess for interval change."
+    },
+    "patient_id": "PT-A-2213",
+    "candidates": [
+      {
+        "id": "A-R2",
+        "report_date": "2025-03-18",
+        "modality": "CT angiogram chest (PE protocol)",
+        "anatomic_coverage": "chest",
+        "impression_text": "No acute pulmonary embolism. Mild bronchial wall thickening compatible with bronchitis. No pleural effusion.",
+        "full_text": "EXAM: CT ANGIOGRAM, CHEST (PE PROTOCOL)\nDATE: 2025-03-18\nHISTORY: 58-year-old with acute shortness of breath and cough; rule out pulmonary embolism.\n\nTECHNIQUE: CT angiography of the chest performed with intravenous contrast, pulmonary embolism protocol.\n\nFINDINGS:\nPulmonary arteries: No filling defect to suggest pulmonary embolism.\nLungs: Mild bronchial wall thickening. No lobar consolidation. No pleural effusion.\nHeart/mediastinum: Normal cardiac silhouette. No pericardial effusion.\n\nIMPRESSION:\nNo acute pulmonary embolism. Mild bronchial wall thickening compatible with bronchitis. No pleural effusion."
+      }
+    ],
+    "reconciliation": {
+      "recommendation_id": "A-R1-rec-1",
+      "candidate_assessments": [
+        {
+          "study_id": "A-R2",
+          "verdict": "UNCONFIRMED",
+          "axes": {
+            "modality_adequacy": {
+              "result": "pass",
+              "reason": "A contrast-enhanced CT angiogram of the chest is capable of visualizing and assessing a pulmonary nodule.",
+              "evidence": [
+                {
+                  "source_id": "A-R2",
+                  "quote": "CT ANGIOGRAM, CHEST (PE PROTOCOL)"
+                }
+              ]
+            },
+            "anatomic_coverage": {
+              "result": "pass",
+              "reason": "The study images the entire chest, including the left upper lobe.",
+              "evidence": [
+                {
+                  "source_id": "A-R2",
+                  "quote": "CT angiography of the chest performed with intravenous contrast, pulmonary embolism protocol."
+                }
+              ]
+            },
+            "finding_acknowledgment": {
+              "result": "fail",
+              "reason": "The report addresses pulmonary emboli, bronchial wall thickening, consolidation, and effusion, but is entirely silent on the previously reported 9 mm left upper lobe nodule.",
+              "evidence": [
+                {
+                  "source_id": "A-R2",
+                  "quote": "Lungs: Mild bronchial wall thickening. No lobar consolidation. No pleural effusion."
+                }
+              ]
+            },
+            "temporal_adequacy": {
+              "result": "on_time",
+              "reason": "Performed ~5.3 months after the recommendation, within the 6-month window.",
+              "evidence": [
+                {
+                  "source_id": "A-R2",
+                  "quote": "DATE: 2025-03-18"
+                }
+              ]
+            },
+            "terminal_event": {
+              "result": "absent",
+              "type": "none",
+              "reason": "No resolution, biopsy, benign characterization, or documented decision not to pursue.",
+              "evidence": []
+            }
+          },
+          "confidence": "high",
+          "rationale": "A capable chest CT was performed in-window but never mentions the 9 mm left upper lobe nodule, so re-evaluation cannot be confirmed."
+        }
+      ],
+      "closure_state": "escalate",
+      "escalation": {
+        "required": true,
+        "question": "A CT angiogram of the chest (PE protocol) was performed on 2025-03-18 but does not mention the solid 9 mm left upper lobe nodule from the 2024-10-08 report \u2014 was the nodule reassessed on that study? Confirm / Deny."
+      }
+    },
+    "overdue": true,
+    "action": {
+      "action_id": "A-R1-rec-1-action",
+      "rec_id": "A-R1-rec-1",
+      "type": "provider_message",
+      "draft_text": "Safety Net flagged a possible follow-up gap for your review. On 2024-10-08, a report described a solid 9 mm nodule in the left upper lobe, with a recommendation for follow-up CT chest in 6 months to assess for interval change. A CT angiogram of the chest (PE protocol) was performed on 2025-03-18 \u2014 a study capable of imaging this nodule \u2014 but its report does not mention the 9 mm left upper lobe nodule (lungs described only as mild bronchial wall thickening, no consolidation or effusion). Was this nodule reassessed on the 2025-03-18 study? Confirm / Deny. If it was not re-evaluated, please re-engage the patient to schedule the recommended follow-up CT chest.",
+      "status": "draft",
+      "approver": null,
+      "ts": null
+    }
+  }
+]
