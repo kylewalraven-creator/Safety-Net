@@ -95,6 +95,12 @@ contract: `docs/whole-chart-schema-contract.md` → implemented as **Section 3**
 - **Self-verify:** `python -m safety_net.eval_harness` → live-set gate (H4
   UNCONFIRMED/High, H1 surfaces, H_SUPPRESS suppressed & cited to the PCP letter,
   **precision == 1.0**, all citations validate). Offline tests: `tests/test_whole_chart.py`.
+- **Live test + determinism model:** `docs/whole-chart-live-test.md`. Two paths —
+  the deterministic demo/gate (committed cache + `chart_review --live-heroes`) vs.
+  the non-deterministic full-live stress test (`chart_review --write-cache`).
+  Extraction naming drifts run-to-run (absorbed by `canonicalize_entity`,
+  `dedupe_by_evidence`, discharge-doc skip, and harness `match_excerpt`); the
+  sweep is precomputed on purpose. Lock the demo on the deterministic path.
 - **Data / offline cache:** `data/chart/{chart.json,manifest.json,cache/}`.
   Regenerate the chart with `scripts/generate_chart.py`; author the offline cache
   (no-key envs) with `scripts/author_cache.py`, or capture a live cache with

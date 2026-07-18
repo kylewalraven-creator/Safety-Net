@@ -154,6 +154,11 @@ python -m safety_net.chart_review --write-cache
 python -m safety_net.chart_review --live-heroes   # H4 + H_SUPPRESS live, rest precomputed
 ```
 
+**Running it live?** See [`docs/whole-chart-live-test.md`](docs/whole-chart-live-test.md)
+for the step-by-step and the determinism model: the demo/gate path (committed
+cache + `--live-heroes`) is deterministic; the full-live `--write-cache` sweep is
+a variable stress test — lock the demo on the deterministic path.
+
 Pipeline: **Haiku** widened signal extraction → deterministic **entity
 threading** (`timeline.py`) → **Opus** per-thread reconciliation (four statuses,
 the suppress/equivalence wedge) → citation validation + `TOP_N`/abstain
