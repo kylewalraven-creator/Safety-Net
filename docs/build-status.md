@@ -49,9 +49,9 @@ The pivot workflow (net-new, on the same engine) is built and self-verifies
   substrings, and every live-set check passes (H4 → UNCONFIRMED/High, H1 surfaces,
   H_SUPPRESS suppressed as CONFIRMED_ADDRESSED cited to the PCP letter).
 - **`python -m safety_net.chart_review --use-cache`: 4 threads surfaced, 1 cleared**
-  — apixaban / creatinine / nodule / blood cultures surface; the colonoscopy
+  — nodule / apixaban / blood cultures / creatinine surface; the colonoscopy
   look-alike is correctly suppressed (closed as "lower endoscopy" in the PCP letter).
-- **`tests/test_whole_chart.py`: 12/12 pass** (no key).
+- **`tests/test_whole_chart.py`: 13/13 pass** (no key; `test_offline.py` 8/8).
 - **Live heroes:** H4 (held apixaban never restarted) + H_SUPPRESS (colonoscopy);
   H1/H2/H3 precompute. Offline cache committed in `data/chart/cache/`.
 - **Contract:** Section 3 of `models.py` (additive; Sections 1–2 untouched, so the
