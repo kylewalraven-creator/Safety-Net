@@ -1,19 +1,21 @@
 {
   "chart_id": "chart_div_4471",
-  "patient_id": "PT-DIV-4471",
-  "patient_name": "Robert Hensley",
-  "age": 64,
-  "sex": "male",
-  "admission_reason": "Acute complicated sigmoid diverticulitis with pericolonic abscess",
-  "admit_date": "2026-06-22",
-  "discharge_date": "2026-07-05",
+  "patient": {
+    "age": 64,
+    "sex": "male",
+    "admit_day": 1,
+    "discharge_day": 14,
+    "patient_id": "PT-DIV-4471",
+    "name": "Robert Hensley",
+    "admission_reason": "Acute complicated sigmoid diverticulitis with pericolonic abscess"
+  },
   "notes": [
     {
       "note_id": "n_hp_d1",
       "day": 1,
       "timestamp": "2026-06-22T08:30:00",
       "author_role": "hospitalist",
-      "note_type": "history_and_physical",
+      "note_type": "progress_note",
       "body": "HISTORY AND PHYSICAL — ADMISSION\nHospital Day 1. Hospitalist admission.\n\nCHIEF COMPLAINT: Left lower quadrant abdominal pain and fever.\n\nHISTORY OF PRESENT ILLNESS: Mr. Robert Hensley is a 64-year-old man with a history of paroxysmal atrial fibrillation, hypertension, and hyperlipidemia who presents with three days of progressive left lower quadrant pain, subjective fevers, and decreased appetite. He denies chest pain, shortness of breath, hematochezia, or melena. In the emergency department he was febrile to 38.6°C with left lower quadrant tenderness. A CT of the abdomen and pelvis was ordered.\n\nPAST MEDICAL HISTORY: Paroxysmal atrial fibrillation; hypertension; hyperlipidemia.\n\nHOME MEDICATIONS: apixaban, lisinopril, atorvastatin (see medication reconciliation).\n\nASSESSMENT AND PLAN:\n1. Acute diverticulitis, likely complicated — await CT; start empiric intravenous antibiotics; interventional radiology as indicated.\n2. Paroxysmal atrial fibrillation — rate controlled; anticoagulation addressed in the peri-procedure note given anticipated intervention.\n3. Hypertension — continue home lisinopril.\n4. Hyperlipidemia — continue home atorvastatin."
     },
     {
@@ -37,7 +39,7 @@
       "day": 1,
       "timestamp": "2026-06-22T10:30:00",
       "author_role": "hospitalist",
-      "note_type": "radiology_order",
+      "note_type": "radiology_report",
       "body": "CT ABDOMEN/PELVIS — ORDER AND PRELIMINARY READ\nHospital Day 1.\nIndication: left lower quadrant pain, fever, leukocytosis; evaluate for diverticulitis/abscess.\nPRELIMINARY: Sigmoid diverticulitis with a pericolonic fluid collection concerning for abscess. Final report to follow. Interventional radiology consulted for possible drainage."
     },
     {

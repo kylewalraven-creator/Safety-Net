@@ -35,6 +35,8 @@ from safety_net.models import (  # noqa: E402
     ChartBundle,
     GroundTruth,
     Note,
+    NoteType,
+    Patient,
     PlantedItem,
     Risk,
     ThreadStatus,
@@ -158,8 +160,10 @@ def build_notes() -> list[Note]:
         )
 
     # ---- Day 1 -----------------------------------------------------------
+    # Admission H&P — no dedicated H&P type in the frozen NoteType vocab, so it
+    # is filed as the initial progress_note (the closest allowed type).
     add(
-        "n_hp_d1", 1, "08:30", "hospitalist", "history_and_physical",
+        "n_hp_d1", 1, "08:30", "hospitalist", "progress_note",
         "HISTORY AND PHYSICAL — ADMISSION\n"
         "Hospital Day 1. Hospitalist admission.\n\n"
         "CHIEF COMPLAINT: Left lower quadrant abdominal pain and fever.\n\n"
@@ -201,8 +205,9 @@ def build_notes() -> list[Note]:
         "is in place. Anticoagulation to be reassessed after the drainage "
         "procedure.",
     )
+    # Preliminary CT read — filed as radiology_report (the final report is d2).
     add(
-        "n_radorder_d1", 1, "10:30", "hospitalist", "radiology_order",
+        "n_radorder_d1", 1, "10:30", "hospitalist", "radiology_report",
         "CT ABDOMEN/PELVIS — ORDER AND PRELIMINARY READ\n"
         "Hospital Day 1.\n"
         "Indication: left lower quadrant pain, fever, leukocytosis; evaluate for "
@@ -542,10 +547,11 @@ def validate(bundle: ChartBundle) -> None:
 
 
 def human_dump(bundle: ChartBundle) -> str:
+    p = bundle.patient
     lines = [
-        f"CHART {bundle.chart_id} — {bundle.patient_name} "
-        f"({bundle.age}{bundle.sex[0].upper()}), {bundle.admission_reason}",
-        f"Admitted {bundle.admit_date} — Discharged {bundle.discharge_date}  "
+        f"CHART {bundle.chart_id} — {p.name} "
+        f"({p.age}{p.sex[0].upper()}), {p.admission_reason}",
+        f"Day {p.admit_day} ({d(1)}) — Day {p.discharge_day} ({DISCHARGE_DATE})  "
         f"({len(bundle.notes)} notes)",
         "=" * 78,
     ]
@@ -561,13 +567,15 @@ def human_dump(bundle: ChartBundle) -> str:
 def main() -> int:
     bundle = ChartBundle(
         chart_id=CHART_ID,
-        patient_id=PATIENT_ID,
-        patient_name=PATIENT_NAME,
-        age=AGE,
-        sex=SEX,
-        admission_reason=ADMISSION_REASON,
-        admit_date=d(1),
-        discharge_date=DISCHARGE_DATE,
+        patient=Patient(
+            age=AGE,
+            sex=SEX,
+            admit_day=1,
+            discharge_day=14,
+            patient_id=PATIENT_ID,
+            name=PATIENT_NAME,
+            admission_reason=ADMISSION_REASON,
+        ),
         notes=build_notes(),
     )
     validate(bundle)

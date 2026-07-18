@@ -346,42 +346,61 @@ class HeroCase(BaseModel):
 # ======================================================================
 # SECTION 3 — WHOLE-CHART REVIEW CONTRACT (the discharge whole-chart pivot)
 #
-# This is the FROZEN data contract for whole-chart review. It was reconstructed
-# from the handoff docs because ``01-schema-contract.md`` was absent from the
-# handoff bundle: the ``Finding`` JSON is transcribed field-for-field from
-# ``03-whole-chart-reasoning-prompt.md``; the taxonomy from the iteration doc
-# §2; the ground-truth manifest and pinned strings from
-# ``02-synthetic-data-spec.md``; the constants and eval spec from
-# ``04-build-plan.md``.
+# Transcribed from the FROZEN ``01-schema-contract.md`` (the single source of
+# truth every whole-chart component codes against). The contract's notation is
+# readable-typed pseudo-schema; this is its Pydantic form. JSON string *values*
+# are frozen and match the contract exactly; class *names* follow repo
+# convention where the contract leaves that to the repo.
 #
 # ADDITIVE ONLY: Sections 1 & 2 (the Safety Net contract) are untouched, so
-# Safety Net stays runnable as the fallback demo. As with Section 1, the strings
-# the Opus whole-chart prompt emits must round-trip through ``Finding`` and its
-# members unchanged — do NOT rename or reorder those fields.
+# Safety Net stays runnable as the fallback demo. As with Section 1, the fields
+# the Opus whole-chart prompt emits (``Finding`` + members) must round-trip
+# unchanged — do NOT rename or reorder them.
+#
+# Two deliberate, noted name deviations (values/shape match the contract):
+#  - contract ``SweepResult`` -> ``ChartReviewResult`` (Section 2 already owns
+#    ``SweepResult`` for the radiology sweep; one package can't hold both).
+#  - contract ``Status`` -> ``ThreadStatus`` (clearer; bare ``Status`` is
+#    ambiguous next to Section 1/2's ``*Status`` enums). Values are identical.
 # ======================================================================
 
 
 # ---- Controlled vocabularies -----------------------------------------
 
 
-class SignalType(str, Enum):
-    """The widened extraction taxonomy — the nine signal families the agent
-    scans for across the full record (iteration doc §2, A–I). This is the
-    "recommendation -> signal" widening of the Safety Net extractor."""
+class NoteType(str, Enum):
+    """The frozen note-type vocabulary (contract: Input.NoteType)."""
 
-    ORPHANED_INCIDENTAL = "orphaned_incidental"  # A: incidental/secondary findings
+    PROGRESS_NOTE = "progress_note"
+    CONSULT_NOTE = "consult_note"
+    RADIOLOGY_REPORT = "radiology_report"
+    LAB_RESULT = "lab_result"
+    MICRO_RESULT = "micro_result"
+    MED_RECONCILIATION = "med_reconciliation"
+    MED_ADMIN = "med_admin"
+    PROCEDURE_NOTE = "procedure_note"
+    NURSING_NOTE = "nursing_note"
+    DISCHARGE_SUMMARY = "discharge_summary"
+    DISCHARGE_ADDENDUM = "discharge_addendum"
+    PCP_LETTER = "pcp_letter"
+
+
+class SignalType(str, Enum):
+    """Widened extraction taxonomy (contract: Stage 1; maps to iteration §2 A–I)."""
+
+    INCIDENTAL_FINDING = "incidental_finding"  # A: incidental/secondary findings
     PENDING_RESULT = "pending_result"  # B: results in limbo at discharge
     TREND = "trend"  # C: point-normal, trend-abnormal series
-    MED_RECONCILIATION = "med_reconciliation"  # D: med-rec gaps
+    MED_RECON_GAP = "med_recon_gap"  # D: med-reconciliation gaps
     CONSULT_RECOMMENDATION = "consult_recommendation"  # E: consult recs not closed
-    DROPPED_SYMPTOM = "dropped_symptom"  # F: dropped symptom/assessment threads
-    CROSS_DOMAIN = "cross_domain"  # G: cross-domain interactions
-    CARE_CONTINUITY = "care_continuity"  # H: care-continuity/disposition gaps
+    DROPPED_THREAD = "dropped_thread"  # F: dropped symptom/assessment threads
+    CROSS_DOMAIN_INTERACTION = "cross_domain_interaction"  # G: cross-domain
+    CONTINUITY_GAP = "continuity_gap"  # H: care-continuity/disposition gaps
     DOCUMENTATION_CONTRADICTION = "documentation_contradiction"  # I: contradictions
 
 
 class Risk(str, Enum):
-    """Risk = CONSEQUENCE OF THE MISS, not raw finding severity (doc 03)."""
+    """Risk = CONSEQUENCE OF THE MISS, not raw finding severity (contract)."""
 
     HIGH = "High"
     MEDIUM = "Medium"
@@ -389,58 +408,65 @@ class Risk(str, Enum):
 
 
 class ThreadStatus(str, Enum):
-    """Per-thread reconciliation status (doc 03). Extends the Safety Net enum
-    to the whole-chart, four-status world."""
+    """Per-thread reconciliation status (contract: Stage 3 ``Status``)."""
 
-    CONFIRMED_ADDRESSED = "CONFIRMED_ADDRESSED"  # loop closed (possibly reworded)
-    UNCONFIRMED = "UNCONFIRMED"  # capable note silent, or rec never in plan
-    CONTRADICTED = "CONTRADICTED"  # notes disagree
-    PENDING_AT_DISCHARGE = "PENDING_AT_DISCHARGE"  # unresolved, no follow-up plan
+    CONFIRMED_ADDRESSED = "CONFIRMED_ADDRESSED"  # loop closed (reworded ok) — SUPPRESS
+    UNCONFIRMED = "UNCONFIRMED"  # capable note silent / rec never in plan — ESCALATE
+    CONTRADICTED = "CONTRADICTED"  # notes disagree — ESCALATE
+    PENDING_AT_DISCHARGE = "PENDING_AT_DISCHARGE"  # unresolved, no plan — ESCALATE
 
 
 class EvidenceKind(str, Enum):
-    """Whether a timeline excerpt attests presence of text, or the context of an
-    absence (the section that SHOULD contain the item)."""
+    """presence -> excerpt is a verbatim substring; absence_context -> the
+    section that SHOULD contain the item, cited verbatim to evidence a gap."""
 
     PRESENCE = "presence"
     ABSENCE_CONTEXT = "absence_context"
 
 
-# ---- Chart ingestion models ------------------------------------------
+# ---- Input: ChartBundle (contract §Input) ----------------------------
+
+
+class Patient(BaseModel):
+    """Patient block of the ChartBundle. The four frozen fields plus optional
+    display extras (patient_id / name / admission_reason) that are NOT part of
+    the contract."""
+
+    age: int
+    sex: str
+    admit_day: int = 1
+    discharge_day: int = 14
+    patient_id: str | None = None
+    name: str | None = None
+    admission_reason: str | None = None
 
 
 class Note(BaseModel):
-    """One note/event in the admission. ``note_id`` is stable and is what
-    ``timeline[].source_note_id`` and ``suggested_action.citation_note_id``
-    reference. ``body`` is the verbatim text; every ``presence`` excerpt must be
-    an exact substring of some note's ``body``."""
+    """One note/event in the admission. ``note_id`` is stable and is what every
+    citation (``timeline[].source_note_id``, ``suggested_action.citation_note_id``)
+    references. Citations must be exact substrings of ``body``."""
 
     note_id: str
-    day: int
-    timestamp: str
+    day: int  # 1..14
+    timestamp: str  # ISO; ordering is load-bearing
     author_role: str
-    note_type: str
+    note_type: NoteType
     body: str
 
 
 class ChartBundle(BaseModel):
-    """A complete admission — the unit the whole-chart review runs over."""
+    """A complete admission — the unit whole-chart review runs over."""
 
     chart_id: str
-    patient_id: str
-    patient_name: str
-    age: int
-    sex: str
-    admission_reason: str
-    admit_date: str
-    discharge_date: str
+    patient: Patient
     notes: list[Note] = Field(default_factory=list)
 
     def note_by_id(self, note_id: str) -> Note | None:
         return next((n for n in self.notes if n.note_id == note_id), None)
 
     def notes_of_type(self, note_type: str) -> list[Note]:
-        return [n for n in self.notes if n.note_type == note_type]
+        want = note_type.value if isinstance(note_type, NoteType) else note_type
+        return [n for n in self.notes if n.note_type.value == want]
 
     def _first_of_type(self, note_type: str) -> Note | None:
         found = self.notes_of_type(note_type)
@@ -467,50 +493,56 @@ class ChartBundle(BaseModel):
         ]
 
 
+# ---- Stage 1 output: ExtractedSignal (Haiku, bulk) -------------------
+
+
 class ExtractedSignal(BaseModel):
-    """One atomic signal extracted (by Haiku) from a single note. ``entity`` is
-    the canonical key threading groups on (e.g. ``apixaban``,
+    """One atomic signal extracted from a single note. ``entity`` is the
+    canonical snake_case key threading groups on (e.g. ``apixaban``,
     ``pulmonary_nodule_lll``). ``verbatim_excerpt`` MUST be an exact substring
-    of the source note's ``body`` — enforced at extraction and again in the
-    harness."""
+    of the source note body — enforced at extraction and again in the harness."""
 
     signal_id: str
-    note_id: str
+    source_note_id: str
     day: int
-    note_type: str
     signal_type: SignalType
     entity: str
-    description: str
+    summary: str  # one-line paraphrase (NOT cited)
     verbatim_excerpt: str
-    value: str | None = None  # optional structured value, e.g. a lab "1.6 mg/dL"
+
+
+# ---- Stage 2 output: Thread (deterministic code — no LLM) ------------
 
 
 class Thread(BaseModel):
-    """All events about one entity across the stay, in temporal order. Built by
-    the deterministic threading module — no LLM."""
+    """All events about one entity across the stay. Built by grouping signals on
+    ``entity`` and sorting by (day, timestamp). Single-event threads are valid."""
 
     thread_id: str
     entity: str
-    signal_type: SignalType
-    events: list[ExtractedSignal] = Field(default_factory=list)
+    signal_type: SignalType  # dominant type across the thread's signals
+    event_signal_ids: list[str] = Field(default_factory=list)  # sorted (day, ts)
+    first_day: int
+    last_day: int
 
 
-# ---- Reconciliation OUTPUT: the Finding contract (doc 03, verbatim) ---
+# ---- Stage 3 output: Finding (Opus, the reasoning hero) --------------
 
 
 class TimelineEvent(BaseModel):
-    """One ordered event in a Finding's evidence timeline."""
+    """One ordered evidence event in a Finding. ``note_type`` is kept as a plain
+    string (a NoteType value) for robustness to model output."""
 
     day: int
     note_type: str
     source_note_id: str
-    excerpt: str
+    excerpt: str  # verbatim substring when evidence_kind == presence
     evidence_kind: EvidenceKind
 
 
 class SuggestedAction(BaseModel):
-    """A draftable artifact a human approves (addendum line, PCP message, order
-    text). ``null`` for CONFIRMED_ADDRESSED findings."""
+    """A draftable artifact a human approves. ``null`` for CONFIRMED_ADDRESSED.
+    ``kind`` is one of addendum | pcp_message | order | appointment_request."""
 
     kind: str
     target: str
@@ -519,9 +551,10 @@ class SuggestedAction(BaseModel):
 
 
 class Finding(BaseModel):
-    """The strict-JSON object Opus emits per Thread (doc 03). ``surfaced`` and
-    ``cleared_reason`` are set by the pipeline, never by the model."""
+    """The strict-JSON object Opus emits per Thread. ``finding_id``, ``surfaced``
+    and ``cleared_reason`` are set by the pipeline, never by the model."""
 
+    finding_id: str = ""  # pipeline-assigned
     thread_id: str
     title: str
     risk: Risk
@@ -531,13 +564,12 @@ class Finding(BaseModel):
     question: str = ""
     suggested_action: SuggestedAction | None = None
     confidence: float
-    # Pipeline-set (grounding/ranking stage) — NOT part of the model's output.
-    surfaced: bool | None = None
+    surfaced: bool = False  # set downstream by cap + threshold; NOT by the model
     cleared_reason: str | None = None
 
     def presence_excerpts(self) -> list[tuple[str, str]]:
-        """(source_note_id, excerpt) for every presence timeline event — the
-        set the citation validator must confirm are exact substrings."""
+        """(source_note_id, excerpt) for every presence timeline event — the set
+        the citation validator must confirm are exact substrings."""
         return [
             (e.source_note_id, e.excerpt)
             for e in self.timeline
@@ -545,31 +577,75 @@ class Finding(BaseModel):
         ]
 
 
-# ---- Run logging + eval oracle ---------------------------------------
+# ---- Run logging + eval oracle (contract §RunMeta) -------------------
+
+
+class LatencyMs(BaseModel):
+    index: int = 0  # extraction + threading
+    reason: int = 0  # Opus reconciliation
+    draft: int = 0  # action drafting
+
+
+class CitationValidation(BaseModel):
+    checked: int = 0
+    passed: int = 0
+    failed: int = 0
+
+
+class PerItem(BaseModel):
+    """One scored planted item (contract: EvalSummary.per_item)."""
+
+    planted_id: str
+    expected_status: str
+    got_status: str
+    outcome: str  # "TP" | "FP" | "FN" | "TN"
+    entity: str | None = None  # display extra
+
+
+class SuppressionTrace(BaseModel):
+    thread_id: str
+    reason: str
+
+
+class Abstention(BaseModel):
+    thread_id: str
+    trigger: str
+
+
+class EvalSummary(BaseModel):
+    """The self-verification gate output (contract §EvalSummary)."""
+
+    precision: float
+    recall: float
+    per_item: list[PerItem] = Field(default_factory=list)
+    suppression_traces: list[SuppressionTrace] = Field(default_factory=list)
+    abstentions: list[Abstention] = Field(default_factory=list)
+    # convenience extras (not part of the frozen contract):
+    passed_gate: bool = False
+    notes: list[str] = Field(default_factory=list)
 
 
 class RunMeta(BaseModel):
-    """Per-run reliability log (iteration §5). ``live`` distinguishes a real
-    LLM run from the deterministic cache path."""
+    """Per-run reliability log (contract §RunMeta). ``eval`` is populated when a
+    run is scored against ground truth; ``live`` distinguishes a real LLM run
+    from the deterministic cache path (a repo extra)."""
 
+    model_reasoning: str  # "claude-opus-4-8"
+    model_extraction: str  # "claude-haiku-4-5-20251001"
     chart_id: str
-    started_at: str
-    live: bool
-    model_opus: str
-    model_haiku: str
-    note_count: int = 0
-    signal_count: int = 0
-    thread_count: int = 0
-    finding_count: int = 0
-    cleared_count: int = 0
-    latency_ms: dict[str, float] = Field(default_factory=dict)  # per-stage
-    abstained: list[str] = Field(default_factory=list)  # thread_ids below threshold
+    context_tokens: int = 0
+    latency_ms: LatencyMs = Field(default_factory=LatencyMs)
+    citation_validation: CitationValidation = Field(default_factory=CitationValidation)
+    eval: EvalSummary | None = None
+    started_at: str | None = None  # repo extra
+    live: bool = False  # repo extra
 
 
 class ChartReviewResult(BaseModel):
-    """The whole-chart review output. ``summary_line`` is the 2-second bookend;
-    ``findings`` is ranked and TOP_N-capped; ``cleared`` holds everything
-    considered and correctly suppressed/abstained (the noise-discipline proof)."""
+    """The whole-chart review output (contract: ``SweepResult``, renamed to avoid
+    colliding with Section 2's). ``summary_line`` is the 2-second bookend;
+    ``findings`` is ranked and TOP_N-capped (surfaced only); ``cleared`` holds
+    everything considered and correctly suppressed/abstained."""
 
     chart_id: str
     summary_line: str
@@ -578,9 +654,12 @@ class ChartReviewResult(BaseModel):
     run_meta: RunMeta | None = None
 
 
-class PlantedItem(BaseModel):
-    """One row of the ground-truth manifest (doc 02) — the eval oracle."""
+# ---- Ground-truth manifest loader (doc 02 oracle) --------------------
+# Not part of the wire contract: it loads the planted-dot table the harness
+# scores against. EvalSummary.per_item is the contract-facing scoring output.
 
+
+class PlantedItem(BaseModel):
     planted_id: str
     entity: str
     note_types: list[str] = Field(default_factory=list)
@@ -598,45 +677,8 @@ class GroundTruth(BaseModel):
         return next((i for i in self.items if i.entity == entity), None)
 
 
-class CitationCheck(BaseModel):
-    thread_id: str
-    source_note_id: str
-    excerpt: str
-    ok: bool
+# ---- Frozen constants (contract §Ranking + surfacing) ----------------
 
-
-class ItemScore(BaseModel):
-    planted_id: str
-    entity: str
-    expected_surfaced: bool
-    actual_surfaced: bool
-    expected_status: ThreadStatus
-    actual_status: ThreadStatus | None = None
-    outcome: str  # "TP" | "FP" | "FN" | "TN"
-
-
-class EvalSummary(BaseModel):
-    """The self-verification gate output (doc 04 Step 7)."""
-
-    model_config = ConfigDict(extra="forbid")
-
-    chart_id: str
-    precision: float
-    recall: float
-    tp: int = 0
-    fp: int = 0
-    fn: int = 0
-    tn: int = 0
-    item_scores: list[ItemScore] = Field(default_factory=list)
-    citation_checks: list[CitationCheck] = Field(default_factory=list)
-    all_citations_valid: bool = True
-    unexpected_entities: list[str] = Field(default_factory=list)  # surfaced, unplanted
-    passed_gate: bool = False
-    notes: list[str] = Field(default_factory=list)
-
-
-# ---- Frozen constants (doc 04) ---------------------------------------
-
-ABSTAIN_THRESHOLD: float = 0.6  # confidence below this -> cleared (abstain), not surfaced
-TOP_N: int = 4  # hard cap on surfaced findings (the anti-dashboard discipline)
+ABSTAIN_THRESHOLD: float = 0.6  # confidence below this -> cleared (abstain)
+TOP_N: int = 4  # hard cap on surfaced findings (anti-dashboard discipline)
 RISK_WEIGHT: dict[Risk, int] = {Risk.HIGH: 3, Risk.MEDIUM: 2, Risk.LOW: 1}
