@@ -1,0 +1,6 @@
+# Core runtime dependencies for Safety Net.
+# (pyproject.toml is the source of truth; this mirrors it for `pip install -r`.)
+anthropic>=0.40
+pydantic>=2.6
+python-dotenv>=1.0
+fastmcp>=2.0

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safety-net"
+version = "0.1.0"
+description = "Retrospective diagnostic-safety agent: reconciles radiology follow-up recommendations against later studies by acknowledgment, not order-matching."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40",
+    "pydantic>=2.6",
+    "python-dotenv>=1.0",
+    "fastmcp>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+safety-net-sweep = "safety_net.sweep:main"
+safety-net-mcp = "safety_net.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+safety_net = ["prompts/*.txt"]
