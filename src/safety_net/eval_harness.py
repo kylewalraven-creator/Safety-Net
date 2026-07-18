@@ -32,6 +32,7 @@ from .models import (
     Finding,
     GroundTruth,
     PerItem,
+    PlantedItem,
     Risk,
     SuppressionTrace,
     ThreadStatus,
@@ -78,16 +79,43 @@ def _finding_by_thread(result: ChartReviewResult, thread_id: str) -> tuple[Findi
     return None, False
 
 
+def _item_by_id(gt: GroundTruth, planted_id: str) -> PlantedItem | None:
+    return next((i for i in gt.items if i.planted_id == planted_id), None)
+
+
+def match_item(result: ChartReviewResult, item: PlantedItem) -> tuple[Finding | None, bool]:
+    """Match a planted item to a finding by canonical entity key first, then by
+    the pinned evidence excerpt (robust to live entity-naming drift, e.g. a
+    ``colonoscopy_followup_diverticulitis`` variant still matches by its cited
+    GI recommendation). Surfaced findings take precedence over cleared ones."""
+    tid = f"t_{item.entity}"
+    for f in result.findings:
+        if f.thread_id == tid:
+            return f, True
+    for f in result.cleared:
+        if f.thread_id == tid:
+            return f, False
+    if item.match_excerpt:
+        for f in result.findings:
+            if any(item.match_excerpt in ev.excerpt for ev in f.timeline):
+                return f, True
+        for f in result.cleared:
+            if any(item.match_excerpt in ev.excerpt for ev in f.timeline):
+                return f, False
+    return None, False
+
+
 def score(
     result: ChartReviewResult, gt: GroundTruth, bundle: ChartBundle
 ) -> EvalSummary:
     per_item: list[PerItem] = []
     tp = fp = fn = tn = 0
-    planted_thread_ids = {f"t_{item.entity}" for item in gt.items}
+    matched_thread_ids: set[str] = set()
 
     for item in gt.items:
-        thread_id = f"t_{item.entity}"
-        finding, surfaced = _finding_by_thread(result, thread_id)
+        finding, surfaced = match_item(result, item)
+        if finding is not None:
+            matched_thread_ids.add(finding.thread_id)
         got_status = finding.status.value if finding else "MISSING"
         exp = item.expected_status.value
 
@@ -107,9 +135,9 @@ def score(
             )
         )
 
-    # Any SURFACED finding that is not a planted dot is a false positive.
+    # Any SURFACED finding not matched to a planted dot is a false positive.
     for f in result.findings:
-        if f.thread_id not in planted_thread_ids:
+        if f.thread_id not in matched_thread_ids:
             fp += 1
             per_item.append(
                 PerItem(planted_id=f"UNPLANTED:{f.thread_id}", expected_status="(none)",
@@ -154,19 +182,19 @@ def check_live_gate(
         lines.append(f"  [{'PASS' if cond else 'FAIL'}] {label}")
 
     # 1. H4 surfaced, UNCONFIRMED, High.
-    h4, h4_surf = _finding_by_thread(result, "t_apixaban")
+    h4, h4_surf = match_item(result, _item_by_id(gt, "H4_apixaban"))
     check(
         h4 is not None and h4_surf and h4.status is ThreadStatus.UNCONFIRMED and h4.risk is Risk.HIGH,
         "H4 apixaban surfaces as UNCONFIRMED / High",
     )
     # 1b. H1 also surfaces (UNCONFIRMED / High).
-    h1, h1_surf = _finding_by_thread(result, "t_pulmonary_nodule_lll")
+    h1, h1_surf = match_item(result, _item_by_id(gt, "H1_nodule"))
     check(
         h1 is not None and h1_surf and h1.status is ThreadStatus.UNCONFIRMED and h1.risk is Risk.HIGH,
         "H1 nodule surfaces in the sweep as UNCONFIRMED / High",
     )
     # 2. H_SUPPRESS NOT surfaced, CONFIRMED_ADDRESSED, cited to the PCP letter.
-    hs, hs_surf = _finding_by_thread(result, "t_colonoscopy_followup")
+    hs, hs_surf = match_item(result, _item_by_id(gt, "H_SUPPRESS_colo"))
     cited_pcp = bool(hs and any(ev.source_note_id == "n_pcp_d14" for ev in hs.timeline))
     check(
         hs is not None and not hs_surf and hs.status is ThreadStatus.CONFIRMED_ADDRESSED and cited_pcp,

@@ -13,6 +13,7 @@ by the model.
 from __future__ import annotations
 
 import json
+import re
 
 from .client import call_json, MODEL_HAIKU
 from .models import (
@@ -106,6 +107,40 @@ def extract_reports(reports: list[Report], *, temperature: float = 0.0) -> list[
 # ======================================================================
 
 
+# Notes whose content is the CLOSURE context, not a source of new threads. The
+# reconciler reads these directly for every thread (absence / reworded closure),
+# so mining them for signals only spawns spurious "already-addressed" threads.
+_DISCHARGE_NOTE_TYPES = {"discharge_summary", "discharge_addendum", "pcp_letter"}
+
+# Deterministic entity canonicalization — a backstop to the prompt's rules, so
+# live extraction drift (a size suffix, a med-status suffix) doesn't fragment a
+# thread or dodge the ground-truth key. The prompt is the primary mechanism.
+_MEASURE_SUFFIX = re.compile(
+    r"_[0-9]+(?:[_.][0-9]+)?_?(?:mm|cm|ml|mcg|mg|kg|g|cc|units?)$"
+)
+_MED_STATUS_SUFFIX = re.compile(
+    r"_(?:restart(?:ed)?|resumption|resumed|resume|hold|held|discontinued|"
+    r"discontinuation|stopped)$"
+)
+
+
+def canonicalize_entity(entity: str) -> str:
+    """Normalize an extracted entity key so events about the same thing thread
+    together and match the canonical manifest keys. Lowercases, snake-cases, and
+    strips trailing size (``_9mm``) and medication-status (``_restart``) suffixes.
+    Deliberately conservative — it does not strip clinical qualifiers."""
+    e = (entity or "").strip().lower()
+    e = re.sub(r"[\s\-/]+", "_", e)
+    e = re.sub(r"[^a-z0-9_]", "", e)
+    e = re.sub(r"_+", "_", e).strip("_")
+    prev = None
+    while prev != e and e:
+        prev = e
+        e = _MEASURE_SUFFIX.sub("", e).strip("_")
+        e = _MED_STATUS_SUFFIX.sub("", e).strip("_")
+    return e
+
+
 def _format_note(note: Note) -> str:
     return json.dumps(
         {
@@ -138,7 +173,7 @@ def extract_signals(note: Note, *, temperature: float = 0.0) -> list[ExtractedSi
         if not isinstance(item, dict):
             continue
         excerpt = _clean(item.get("verbatim_excerpt"))
-        entity = _clean(item.get("entity"))
+        entity = canonicalize_entity(_clean(item.get("entity")))
         # Enforce the substring rule at the source: silence != a citation.
         if not excerpt or excerpt not in note.body or not entity:
             continue
@@ -161,8 +196,15 @@ def extract_signals(note: Note, *, temperature: float = 0.0) -> list[ExtractedSi
 
 
 def extract_chart(bundle: ChartBundle, *, temperature: float = 0.0) -> list[ExtractedSignal]:
-    """Bulk-extract signals across every note in the chart."""
+    """Bulk-extract signals across the admission notes.
+
+    The discharge documents (summary, addendum, PCP letter) are skipped: they are
+    the CLOSURE context the reconciler reads against every thread, not a source of
+    new threads. Mining them only manufactures spurious "already-addressed"
+    threads (e.g. a reworded follow-up), which is noise, not a fallen thread."""
     signals: list[ExtractedSignal] = []
     for note in bundle.notes:
+        if note.note_type.value in _DISCHARGE_NOTE_TYPES:
+            continue
         signals.extend(extract_signals(note, temperature=temperature))
     return signals

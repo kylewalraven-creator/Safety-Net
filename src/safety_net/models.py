@@ -667,6 +667,10 @@ class PlantedItem(BaseModel):
     expected_risk: Risk | None = None
     surfaced: bool  # the pass/fail expectation
     live: str  # "live" | "precompute"
+    # A pinned excerpt that uniquely identifies this dot by the EVIDENCE it cites,
+    # so the harness can match a finding even when live extraction names the entity
+    # differently (e.g. colonoscopy_followup_diverticulitis). Robust oracle.
+    match_excerpt: str | None = None
 
 
 class GroundTruth(BaseModel):

@@ -204,6 +204,48 @@ def test_reconcile_thread_wiring_and_payload(monkeypatch):
     assert captured["system"].startswith("You are a diagnostic-safety reconciliation reasoner")
 
 
+def test_canonicalize_entity_collapses_live_drift():
+    from safety_net.extract import canonicalize_entity as c
+    assert c("pulmonary_nodule_lll_9mm") == "pulmonary_nodule_lll"   # size suffix
+    assert c("apixaban_restart") == "apixaban"                       # med-status suffix
+    assert c("Apixaban") == "apixaban"                               # case
+    assert c("blood_culture_d11") == "blood_culture_d11"             # day suffix preserved
+    assert c("creatinine_series") == "creatinine_series"             # unchanged
+
+
+def test_extract_chart_skips_discharge_documents(monkeypatch):
+    bundle = chart_review.load_chart()
+    seen: list[str] = []
+
+    def fake_extract_signals(note, **k):
+        seen.append(note.note_type.value)
+        return []
+
+    monkeypatch.setattr(extract, "extract_signals", fake_extract_signals)
+    extract.extract_chart(bundle)
+    # The discharge documents are closure context, not thread sources.
+    assert "discharge_summary" not in seen
+    assert "discharge_addendum" not in seen
+    assert "pcp_letter" not in seen
+    assert "progress_note" in seen and "radiology_report" in seen  # during-stay mined
+
+
+def test_harness_matches_by_excerpt_when_entity_drifts():
+    """The live failure mode: extraction names an entity differently. The harness
+    must still match the dot by its pinned evidence excerpt, not count it FP."""
+    bundle = chart_review.load_chart()
+    gt = chart_review.load_ground_truth()
+    result = chart_review.run_review(bundle, use_cache=True)
+    nod = next(f for f in result.findings if f.thread_id == "t_pulmonary_nodule_lll")
+    nod.thread_id = "t_pulmonary_nodule_lll_9mm"  # simulate a size-suffixed variant
+    nod.finding_id = "f_pulmonary_nodule_lll_9mm"
+    summary = eval_harness.score(result, gt, bundle)
+    h1 = next(pi for pi in summary.per_item if pi.planted_id == "H1_nodule")
+    assert h1.outcome == "TP"                      # matched by excerpt, not missed
+    assert summary.precision == 1.0                # and not double-counted as an FP
+    assert not any(pi.outcome == "FP" for pi in summary.per_item)
+
+
 def _cache_signals():
     import json
     from safety_net.models import ExtractedSignal

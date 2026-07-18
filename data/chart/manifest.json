@@ -11,7 +11,8 @@
       "expected_status": "UNCONFIRMED",
       "expected_risk": "High",
       "surfaced": true,
-      "live": "precompute"
+      "live": "precompute",
+      "match_excerpt": "9 mm solid nodule in the left lower lobe"
     },
     {
       "planted_id": "H_SUPPRESS_colo",
@@ -23,7 +24,8 @@
       "expected_status": "CONFIRMED_ADDRESSED",
       "expected_risk": null,
       "surfaced": false,
-      "live": "live"
+      "live": "live",
+      "match_excerpt": "outpatient colonoscopy in 6"
     },
     {
       "planted_id": "H4_apixaban",
@@ -36,7 +38,8 @@
       "expected_status": "UNCONFIRMED",
       "expected_risk": "High",
       "surfaced": true,
-      "live": "live"
+      "live": "live",
+      "match_excerpt": "Apixaban held on admission"
     },
     {
       "planted_id": "H2_bcx",
@@ -48,7 +51,8 @@
       "expected_status": "PENDING_AT_DISCHARGE",
       "expected_risk": "Medium",
       "surfaced": true,
-      "live": "precompute"
+      "live": "precompute",
+      "match_excerpt": "Blood cultures x2 drawn for temperature"
     },
     {
       "planted_id": "H3_aki",
@@ -60,7 +64,8 @@
       "expected_status": "UNCONFIRMED",
       "expected_risk": "Medium",
       "surfaced": true,
-      "live": "precompute"
+      "live": "precompute",
+      "match_excerpt": "Creatinine 1.6 mg/dL"
     }
   ]
 }

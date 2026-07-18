@@ -20,7 +20,13 @@ Do NOT extract routine, clearly-resolved, or purely administrative content. When
 ## ENTITY CANONICALIZATION (critical — threading groups purely on this key)
 `entity` is a normalized handle that links events across notes/days about the SAME thing. Same drug across notes -> same entity. Same nodule across two reports -> same entity. A serial lab -> ONE entity for the whole series. Use lowercase snake_case, anatomically/pharmacologically specific. Examples of the intended style:
 `apixaban`, `pulmonary_nodule_lll`, `creatinine_series`, `abscess_culture`, `blood_culture_d11`, `colonoscopy_followup`.
-For a serial lab, use `<analyte>_series` (e.g. `creatinine_series`). For a drug, use the generic drug name. When unsure, prefer the more specific handle, and be consistent so the same thing always gets the same key.
+
+STRICT RULES — follow exactly so the same thing always gets ONE key:
+- **Medication:** the bare generic drug name and nothing else — `apixaban`, never `apixaban_restart` / `apixaban_hold` / `apixaban_dose`. The hold event, the home-med event, and the discharge-omission all share the one key `apixaban`.
+- **Imaging finding:** `<organ>_<finding>_<location>` WITHOUT any size/measurement — `pulmonary_nodule_lll`, never `pulmonary_nodule_lll_9mm`.
+- **Consult/procedure follow-up:** name the PROCEDURE/PLAN, never the indication — `colonoscopy_followup`, never `colonoscopy_followup_diverticulitis`. Treat synonyms as the same entity (a "lower endoscopy" recommendation is still `colonoscopy_followup`).
+- **Serial lab:** `<analyte>_series` (e.g. `creatinine_series`).
+Do not append status, action, indication, size, or date qualifiers to the key. When unsure, pick the shortest specific handle and reuse it.
 
 ## FIELDS PER SIGNAL
 - signal_type: one value from the vocabulary above.
