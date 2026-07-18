@@ -1,4 +1,9 @@
-# Safety Net — Demo Script (live 3-min + Q&A)
+# Safety Net — Radiology Two-Hero Demo Script — fallback (live 3-min + Q&A)
+
+> **Fallback demo.** The current **headline/canonical demo is Whole-Chart Review**
+> (`docs/demo-script.md`, rendered by `ui/render_chart.py`). Keep this radiology
+> two-hero script rehearsed as the backup — it renders via `ui/render.py` →
+> `ui/index.html`.
 
 ## Summary — read this first
 - **What it is:** Safety Net — a retrospective diagnostic-safety agent that sweeps a backlog of *correct* radiology reports and surfaces the follow-up recommendations that were never actually addressed, each with a verbatim citation and a specific, human-answerable question.

@@ -1,12 +1,17 @@
-# Safety Net — Demo Runbook (matched to the built UI)
+# Safety Net — Demo Runbook (radiology two-hero — the fallback demo)
+
+> **This is the retained _fallback_ demo (radiology two-hero, renders
+> `ui/index.html`).** The current **headline/canonical demo is Whole-Chart
+> Review** — script `docs/demo-script.md`, rendered by `ui/render_chart.py` →
+> `ui/whole_chart.html`. Keep this one rehearsed as the backup.
 
 The click-by-click guide for the live demo. This matches what the **built UI
 actually shows** — a **pre-rendered static page** (both cases' reasoning is
 already on screen). You scroll through it and make **one real click (Approve)**.
 The page makes **zero network calls during the demo**, so wifi loss is survivable.
 
-For the full narration and timing, see `docs/demo-script.md`; this runbook maps
-those beats onto the real artifacts.
+For the full narration and timing, see `docs/demo-script-two-hero.md` (the
+radiology script); this runbook maps those beats onto the real artifacts.
 
 ## One-time setup (before dry runs)
 ```bash

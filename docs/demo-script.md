@@ -1,9 +1,11 @@
 # Safety Net — Whole-Chart Review — Demo Script (live 3-min + Q&A)
 
-> **This script is the source of truth for the UI.** Numbers match what the
-> committed **offline cache** actually renders (`python -m safety_net.chart_review
-> --use-cache` → 4 surfaced, 1 cleared, 9/9 citations, precision 1.0). The demo
-> runs offline, deterministically — no wifi, no live call. See the **UI spec** below.
+> **Canonical / headline demo — this script is the source of truth for the UI.**
+> Numbers match what the committed **offline cache** actually renders (`python -m
+> safety_net.chart_review --use-cache` → 4 surfaced, 1 cleared, 9/9 citations,
+> precision 1.0). The demo runs offline, deterministically — no wifi, no live
+> call. (Radiology two-hero is the fallback: `docs/demo-script-two-hero.md`.)
+> See the **UI spec** below.
 
 ## Summary — read this first
 - **What it is:** Safety Net reviews an entire **14-day inpatient admission at discharge**, connects signals across every note/lab/consult, and surfaces only the threads that genuinely fell through — each with a verbatim citation and a specific, human-answerable question — while **correctly clearing** what was already handled.

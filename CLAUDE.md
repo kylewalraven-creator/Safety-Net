@@ -7,10 +7,15 @@ whether a later study happened. A capable scan that never mentions the finding
 is **UNCONFIRMED → escalate with a specific, human-answerable question**, never
 silently closed. One-day hackathon project (Abridge × Anthropic × Lightspeed).
 
-> **New session: read `docs/build-status.md` (full handoff — status, decisions,
-> next steps) and `docs/demo-runbook.md` (how the demo actually runs) first.**
-> The four authoritative design docs live in `docs/`: `master-blueprint.md`,
-> `reconciliation-spec.md`, `run-of-day.md`, `reconciliation-prompt.md`.
+> **New session, start here.** The **headline build and canonical demo is
+> Whole-Chart Review** (the most recent pivot). Read the **"Whole-Chart Review
+> pivot"** section below, `docs/demo-script.md` (the demo — source of truth for the
+> UI), and the whole-chart design docs (`whole-chart-schema-contract.md` [frozen],
+> `-build-plan`, `-iteration`, `-reasoning-prompt`, `-synthetic-data-spec`) first.
+> The original **radiology Safety Net is the retained fallback**: handoff in
+> `docs/build-status.md`, runbook `docs/demo-runbook.md`; design docs
+> `master-blueprint.md`, `reconciliation-spec.md`, `run-of-day.md`,
+> `reconciliation-prompt.md`.
 
 ## Architecture
 Deterministic code sweep loads reports → **Haiku** extracts recommendations +
@@ -64,7 +69,7 @@ gitignored — regenerate it, don't commit it.
 - `src/safety_net/`: `models.py` (contract), `client.py`, `prompts/`,
   `extract.py` (Haiku), `reconcile.py` (Opus 5-axis), `actions.py` (Opus draft +
   approve/audit), `sweep.py` (deterministic orchestration + matching + overdue +
-  cache), `mcp_server.py` (thin FastMCP, 7 tools).
+  cache), `mcp_server.py` (thin FastMCP, 12 tools — 7 Safety Net + 5 whole-chart).
 - `data/heroes/`: Case A (→ escalate), Case B (→ superseded). `data/filler/`:
   sweep volume (6 normal reports). `data/cache/`: committed real hero responses.
 - `scripts/preflight.py`, `scripts/smoke_case_a.py`; `tests/test_offline.py`
@@ -72,13 +77,13 @@ gitignored — regenerate it, don't commit it.
 - `data/synthetic-ambient-fhir-25/`: teammate Deep's synthetic FHIR dataset —
   **not** consumed by the sweep (which loads only `data/heroes` + `data/filler`).
 
-## Status (2026-07-18)
+## Status (2026-07-18) — Safety Net (radiology, the fallback demo)
 Full first slice built and verified end-to-end: preflight 11/11 live, Case A →
 escalate + question, Case B → superseded, offline tests 8/8, UI renders with
 highlighted citations. Working branch: `claude/safety-net-repo-setup-f3yb0f`.
 See `docs/build-status.md` for decisions, rationale, what's stubbed, and next steps.
 
-## Whole-Chart Review pivot (branch `claude/safety-net-whole-chart-pivot-9hlur9`)
+## Whole-Chart Review pivot — the headline build (merged into `claude/safety-net-repo-setup-f3yb0f`)
 A net-new workflow on the same engine: review a **14-day admission at discharge**
 and surface only the threads that fell through (escalate), while **suppressing**
 look-alikes closed in different words (equivalence, not keyword match). Frozen
