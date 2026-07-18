@@ -251,26 +251,27 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", action="store_true", help="Print the ChartReviewResult as JSON.")
     args = parser.parse_args(argv)
 
-    needs_key = args.write_cache or (not args.use_cache) or args.live_heroes
-    if needs_key and not has_api_key():
-        if args.use_cache or (not args.write_cache and not args.live_heroes):
-            pass  # pure --use-cache path is fine without a key
-        else:
-            print(
-                "ANTHROPIC_API_KEY is not set. Add it to .env for a live run, or use "
-                "--use-cache to run offline from the committed cache.",
-                file=sys.stderr,
-            )
-            return 2
+    key = has_api_key()
+    if (args.write_cache or args.live_heroes) and not key:
+        print(
+            "ANTHROPIC_API_KEY is not set. Add it to .env for a live run "
+            "(--write-cache / --live-heroes), or use --use-cache to run offline "
+            "from the committed cache.",
+            file=sys.stderr,
+        )
+        return 2
 
     try:
         bundle = load_chart()
         if args.write_cache:
-            sp, fp = write_cache(bundle)
+            sp, fp = write_cache(bundle)  # the single live extract+reconcile pass
             print(f"Wrote cache: {sp.name}, {fp.name}")
 
         live_entities = LIVE_HERO_ENTITIES if args.live_heroes else None
-        use_cache = args.use_cache or (not has_api_key() and not args.write_cache)
+        # After --write-cache, display from the just-written cache (one live pass,
+        # not two). --live-heroes reconciles the two heroes live and loads the rest
+        # from cache. With no key and no flags, fall back to the committed cache.
+        use_cache = args.use_cache or args.write_cache or args.live_heroes or (not key)
         result = run_review(bundle, use_cache=use_cache, live_entities=live_entities)
 
         if args.json:
