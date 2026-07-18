@@ -19,6 +19,7 @@ from safety_net.grounding import apply_surfacing, validate_citations  # noqa: E4
 from safety_net.models import (  # noqa: E402
     ABSTAIN_THRESHOLD,
     TOP_N,
+    ChartReviewResult,
     ExtractedSignal,
     Finding,
     Note,
@@ -102,14 +103,23 @@ def _finding(entity, status, conf, risk=Risk.HIGH, excerpt="Apixaban held on adm
 
 def test_grounding_suppresses_addressed_abstains_and_caps():
     bundle = chart_review.load_chart()
+    # Each finding cites DISTINCT evidence (a different note+excerpt) so the dedup
+    # pass leaves them all and the TOP_N cap is exercised for real.
     findings = [
-        _finding("addressed", ThreadStatus.CONFIRMED_ADDRESSED, 0.9),          # -> cleared
-        _finding("lowconf", ThreadStatus.UNCONFIRMED, 0.30),                   # -> abstain/cleared
-        _finding("a", ThreadStatus.UNCONFIRMED, 0.95),                         # -> surfaced
-        _finding("b", ThreadStatus.UNCONFIRMED, 0.94),
-        _finding("c", ThreadStatus.UNCONFIRMED, 0.93),
-        _finding("d", ThreadStatus.UNCONFIRMED, 0.92),
-        _finding("e", ThreadStatus.UNCONFIRMED, 0.91),                         # 5th -> capped
+        _finding("addressed", ThreadStatus.CONFIRMED_ADDRESSED, 0.9,
+                 excerpt="Acetaminophen 650 mg by mouth every 6 hours as needed for pain.", note="n_dc_d14"),
+        _finding("lowconf", ThreadStatus.UNCONFIRMED, 0.30,
+                 excerpt="Creatinine 1.2 mg/dL", note="n_labs_d3"),           # -> abstain/cleared
+        _finding("a", ThreadStatus.UNCONFIRMED, 0.95,
+                 excerpt="Apixaban held on admission in anticipation of percutaneous drain placement.", note="n_hold_d1"),
+        _finding("b", ThreadStatus.UNCONFIRMED, 0.94,
+                 excerpt="lisinopril 10 mg daily", note="n_medrec_d1"),
+        _finding("c", ThreadStatus.UNCONFIRMED, 0.93,
+                 excerpt="outpatient colonoscopy in 6", note="n_gi_d4"),
+        _finding("d", ThreadStatus.UNCONFIRMED, 0.92,
+                 excerpt="Blood cultures x2 drawn for temperature", note="n_micro_d11"),
+        _finding("e", ThreadStatus.UNCONFIRMED, 0.91,
+                 excerpt="Creatinine 1.6 mg/dL", note="n_labs_d5"),           # 5th -> capped
     ]
     res = apply_surfacing(findings, bundle)
     assert len(res.surfaced) == TOP_N == 4
@@ -244,6 +254,55 @@ def test_harness_matches_by_excerpt_when_entity_drifts():
     assert h1.outcome == "TP"                      # matched by excerpt, not missed
     assert summary.precision == 1.0                # and not double-counted as an FP
     assert not any(pi.outcome == "FP" for pi in summary.per_item)
+
+
+def test_dedup_collapses_split_thread_and_restores_precision():
+    """Reproduce the live failure: extraction split the nodule into two entities
+    (pulmonary_nodule_lll + chest_ct_followup), both citing the nodule sentence.
+    The duplicate was an FP and crowded creatinine out of TOP_N. Dedup must
+    collapse it -> precision 1.0, creatinine surfaces."""
+    bundle = chart_review.load_chart()
+    gt = chart_review.load_ground_truth()
+
+    def F(tid, conf, status, risk, note, excerpt, extra=None):
+        tl = [{"day": 2, "note_type": "radiology_report", "source_note_id": note,
+               "excerpt": excerpt, "evidence_kind": "presence"}]
+        if extra:
+            tl.append(extra)
+        return Finding.model_validate({
+            "finding_id": f"f_{tid[2:]}", "thread_id": tid, "title": tid, "risk": risk,
+            "status": status, "connection": "c", "timeline": tl, "question": "q?",
+            "confidence": conf,
+        })
+
+    nod = "Incidental 9 mm solid nodule in the left lower lobe at the lung base."
+    findings = [
+        F("t_chest_ct_followup", 0.94, "UNCONFIRMED", "High", "n_ct_d2", nod),      # dup
+        F("t_pulmonary_nodule_lll", 0.93, "UNCONFIRMED", "High", "n_ct_d2", nod),   # dup
+        F("t_apixaban", 0.90, "UNCONFIRMED", "High", "n_hold_d1",
+          "Apixaban held on admission in anticipation of percutaneous drain placement."),
+        F("t_blood_culture_d11", 0.82, "PENDING_AT_DISCHARGE", "High", "n_micro_d11",
+          "Blood cultures x2 drawn for temperature to 38.9°C. Result: pending."),
+        F("t_creatinine_series", 0.75, "UNCONFIRMED", "Medium", "n_labs_d5", "Creatinine 1.6 mg/dL"),
+        F("t_colonoscopy_followup", 0.88, "CONFIRMED_ADDRESSED", "Low", "n_gi_d4",
+          "outpatient colonoscopy in 6",
+          extra={"day": 14, "note_type": "pcp_letter", "source_note_id": "n_pcp_d14",
+                 "excerpt": "lower endoscopy with gastroenterology", "evidence_kind": "presence"}),
+    ]
+    res = apply_surfacing(findings, bundle)
+    assert len(res.duplicates) == 1  # one nodule finding dropped as a duplicate
+    surfaced_ids = {f.thread_id for f in res.surfaced}
+    assert "t_creatinine_series" in surfaced_ids  # no longer crowded out of TOP_N
+    nodule_surfaced = [f for f in res.surfaced if f.thread_id in ("t_chest_ct_followup", "t_pulmonary_nodule_lll")]
+    assert len(nodule_surfaced) == 1  # exactly one nodule finding survives
+
+    result = ChartReviewResult(chart_id=bundle.chart_id, summary_line="x",
+                               findings=res.surfaced, cleared=res.cleared)
+    summary = eval_harness.score(result, gt, bundle)
+    assert summary.precision == 1.0
+    assert summary.recall == 1.0
+    assert not any(pi.outcome == "FP" for pi in summary.per_item)
+    assert next(pi for pi in summary.per_item if pi.planted_id == "H3_aki").outcome == "TP"
 
 
 def _cache_signals():

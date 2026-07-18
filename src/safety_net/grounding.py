@@ -24,6 +24,7 @@ from .models import (
     RISK_WEIGHT,
     TOP_N,
     ChartBundle,
+    EvidenceKind,
     Finding,
     ThreadStatus,
 )
@@ -49,6 +50,7 @@ class SurfacingResult:
     surfaced: list[Finding] = field(default_factory=list)
     cleared: list[Finding] = field(default_factory=list)
     rejected: list[Finding] = field(default_factory=list)  # invalid citations -> dropped
+    duplicates: list[Finding] = field(default_factory=list)  # same-evidence dups -> dropped
     citation_results: list[CitationResult] = field(default_factory=list)
     abstentions: list[tuple[str, str]] = field(default_factory=list)  # (thread_id, trigger)
 
@@ -72,6 +74,42 @@ def validate_citations(finding: Finding, bundle: ChartBundle) -> list[CitationRe
 def rank_score(finding: Finding) -> float:
     """risk_weight * confidence (contract §Ranking + surfacing)."""
     return RISK_WEIGHT.get(finding.risk, 1) * finding.confidence
+
+
+def _presence_pairs(finding: Finding) -> list[tuple[str, str]]:
+    return [
+        (e.source_note_id, e.excerpt)
+        for e in finding.timeline
+        if e.evidence_kind is EvidenceKind.PRESENCE
+    ]
+
+
+def _same_evidence(a: Finding, b: Finding) -> bool:
+    """True if two findings rest on the same evidence — a shared presence citation
+    (same note, and one excerpt equal to or containing the other). Catches a
+    semantic duplicate where extraction split one thread into two entities (e.g. a
+    nodule finding vs. its recommended follow-up CT), which suffix-canonicalization
+    cannot merge because the keys share no stem."""
+    for na, xa in _presence_pairs(a):
+        for nb, xb in _presence_pairs(b):
+            if na == nb and (xa == xb or xa in xb or xb in xa):
+                return True
+    return False
+
+
+def dedupe_by_evidence(findings: list[Finding]) -> tuple[list[Finding], list[Finding]]:
+    """Collapse findings that rest on the same evidence, keeping the highest
+    confidence one. Returns (kept, dropped)."""
+    kept: list[Finding] = []
+    dropped: list[Finding] = []
+    for f in sorted(findings, key=lambda x: x.confidence, reverse=True):
+        if any(_same_evidence(f, k) for k in kept):
+            f.surfaced = False
+            f.cleared_reason = "duplicate — same evidence as a higher-confidence finding"
+            dropped.append(f)
+        else:
+            kept.append(f)
+    return kept, dropped
 
 
 def _addressed_reason(finding: Finding) -> str:
@@ -100,6 +138,11 @@ def apply_surfacing(
             f.surfaced = False
             f.cleared_reason = "REJECTED — a presence citation is not a verbatim substring"
             res.rejected.append(f)
+
+    # Collapse semantic duplicates (two entities, same evidence) BEFORE ranking,
+    # so a duplicate neither surfaces nor consumes a TOP_N slot.
+    valid, dups = dedupe_by_evidence(valid)
+    res.duplicates.extend(dups)
 
     # Candidates to surface = escalate statuses with confidence at/above threshold.
     candidates: list[Finding] = []

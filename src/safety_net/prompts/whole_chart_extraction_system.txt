@@ -26,6 +26,7 @@ STRICT RULES — follow exactly so the same thing always gets ONE key:
 - **Imaging finding:** `<organ>_<finding>_<location>` WITHOUT any size/measurement — `pulmonary_nodule_lll`, never `pulmonary_nodule_lll_9mm`.
 - **Consult/procedure follow-up:** name the PROCEDURE/PLAN, never the indication — `colonoscopy_followup`, never `colonoscopy_followup_diverticulitis`. Treat synonyms as the same entity (a "lower endoscopy" recommendation is still `colonoscopy_followup`).
 - **Serial lab:** `<analyte>_series` (e.g. `creatinine_series`).
+- **A finding and the follow-up it triggers are ONE entity — the finding.** Do not split the recommended follow-up study/action into a separate entity. An incidental nodule and its recommended chest CT are both `pulmonary_nodule_lll` — never a separate `chest_ct_followup`. Emit ONE signal per finding, whose excerpt includes the recommendation.
 Do not append status, action, indication, size, or date qualifiers to the key. When unsure, pick the shortest specific handle and reuse it.
 
 ## FIELDS PER SIGNAL
