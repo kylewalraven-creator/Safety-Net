@@ -168,6 +168,49 @@ def test_suppress_cited_to_pcp_letter():
     assert all(ev.excerpt in bundle.note_by_id(ev.source_note_id).body for ev in hs.timeline)
 
 
+def test_reconcile_thread_wiring_and_payload(monkeypatch):
+    """De-risk the live path (no key here): the reconcile wiring must build a
+    payload containing the thread events + all three discharge documents, and
+    parse the model's JSON into a Finding with the thread_id echoed and a stable
+    finding_id assigned."""
+    from safety_net import reconcile as rec
+
+    bundle = chart_review.load_chart()
+    signals = {s.signal_id: s for s in _cache_signals()}
+    thread = next(t for t in build_threads(list(signals.values()), bundle)
+                  if t.entity == "apixaban")
+
+    captured = {}
+
+    def fake_call_json(model, system, user, **k):
+        captured["system"] = system
+        captured["user"] = user
+        return {  # a minimal valid Finding (no finding_id/surfaced — pipeline sets them)
+            "thread_id": "WRONG_should_be_overwritten", "title": "t", "risk": "High",
+            "status": "UNCONFIRMED", "connection": "c",
+            "timeline": [{"day": 1, "note_type": "progress_note", "source_note_id": "n_hold_d1",
+                          "excerpt": "Apixaban held on admission in anticipation of percutaneous drain placement.",
+                          "evidence_kind": "presence"}],
+            "question": "q?", "suggested_action": None, "confidence": 0.9,
+        }
+
+    monkeypatch.setattr(rec, "call_json", fake_call_json)
+    finding = rec.reconcile_thread(thread, signals, bundle)
+    assert finding.thread_id == "t_apixaban"          # echoed from the input thread
+    assert finding.finding_id == "f_apixaban"         # pipeline-assigned
+    # Payload carries the discharge closure docs the reasoner needs for equivalence/absence.
+    assert '"discharge_summary"' in captured["user"] and '"pcp_letter"' in captured["user"]
+    assert "n_hold_d1" in captured["user"]            # the thread's source note body
+    assert captured["system"].startswith("You are a diagnostic-safety reconciliation reasoner")
+
+
+def _cache_signals():
+    import json
+    from safety_net.models import ExtractedSignal
+    data = json.loads((ROOT / "data" / "chart" / "cache" / "signals.json").read_text())
+    return [ExtractedSignal.model_validate(d) for d in data]
+
+
 def _run_all() -> int:
     import inspect
     funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
