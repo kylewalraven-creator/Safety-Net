@@ -154,6 +154,9 @@ def test_offline_pipeline_matches_manifest():
     assert surfaced["t_apixaban"].status is ThreadStatus.UNCONFIRMED
     assert surfaced["t_apixaban"].risk is Risk.HIGH
     assert cleared["t_colonoscopy_followup"].status is ThreadStatus.CONFIRMED_ADDRESSED
+    # Per clinical review, the nodule leads the surfaced list (ranks above apixaban).
+    assert result.findings[0].thread_id == "t_pulmonary_nodule_lll"
+    assert result.findings[1].thread_id == "t_apixaban"
 
 
 def test_harness_gate_passes():

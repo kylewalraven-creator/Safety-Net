@@ -126,7 +126,9 @@ H1 = {
         "kind": "addendum", "target": "discharge summary",
         "draft_text": "Add to the discharge Follow-up plan: incidental 9 mm left lower lobe pulmonary nodule noted on the Day 2 CT with a Fleischner recommendation for a follow-up chest CT in 3 months. Schedule the interval chest CT, notify the PCP, and document tracking so the study is completed.",
         "citation_note_id": "n_ct_d2"},
-    "confidence": 0.9,
+    # 0.94 (matches live Opus, which scored the nodule higher than apixaban) so the
+    # clear-cut dropped-Fleischner-rec leads the surfaced list, per clinical review.
+    "confidence": 0.94,
 }
 
 H2 = {
