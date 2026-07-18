@@ -1,6 +1,6 @@
 # Safety Net — Master Build Blueprint (Hackathon Day)
 
-The integrating doc. Detail on the reasoning logic lives in `safety-net-reconciliation-prompt.md`, the demo shape and wedge in `safety-net-reconciliation-spec.md`, and the schedule in `safety-net-run-of-day.md`. This is the *what to build, with what, in what order, and what not to forget*.
+The integrating doc. Detail on the reasoning logic lives in `reconciliation-prompt.md`, the demo shape and wedge in `reconciliation-spec.md`, and the schedule in `run-of-day.md`. This is the *what to build, with what, in what order, and what not to forget*.
 
 ## 1. What we're building
 A retrospective diagnostic-safety agent: it sweeps a backlog of finished radiology reports, extracts every follow-up recommendation, reasons about whether each was **actually addressed** by a later study (not just whether a study happened), and surfaces the ones that fell through — with a specific, human-answerable question for each ambiguous case. The deliverable is a **~3-minute live demo** of two contrasting patients (one that looks closed but isn't → escalate; one that looks open but is closed → suppress) plus one human-approved closing action.
@@ -13,7 +13,7 @@ raw reports (JSON)
   → [Candidate match · code] → per open rec: plausible later studies (same patient, anatomic overlap, date > rec date)
   → [Reconcile · Opus]       → verdict + per-axis evidence + closure_state + escalation   ◀── the reasoning core
   → [State machine · code]   → per-rec status; overdue computed vs as_of_date
-  → [Draft action · Opus/Haiku] → outreach/order draft (for escalate/open) → [Human approve · UI] → audit log
+  → [Draft action · Opus]       → outreach/order draft (for escalate/open) → [Human approve · UI] → audit log
                                     ▲
               all wrapped as an [MCP server] (tools); thin [Web UI] renders trace + evidence highlight + approve
 ```
@@ -44,7 +44,7 @@ raw reports (JSON)
 - **reconciliation_result** — the JSON emitted by the Opus prompt (see prompt doc)
 - **action_draft** `{action_id, rec_id, type: patient_letter|provider_message|order, draft_text, status: draft|approved, approver, ts}`
 - **audit_event** (append-only) `{ts, actor, action, rec_id, detail}`
-- **closure_state** enum: `open_overdue | scheduled | completed | superseded | declined | overrode | escalate`
+- **closure_state** enum: `open_overdue | completed | superseded | declined | overrode | escalate` (`scheduled` is set upstream from order/appointment data, not emitted by the reconciliation engine)
 
 The reconciliation JSON schema is already fixed in the prompt — that contract is what lets the UI and the agent be built **in parallel** (mock the JSON, build the UI against it, swap in the real agent later).
 

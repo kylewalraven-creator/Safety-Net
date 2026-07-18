@@ -1,5 +1,10 @@
 # Safety Net — UI overhaul brief (prompt for Claude Design)
 
+> **Scope: this briefs the radiology two-hero UI (`ui/render.py` → `ui/index.html`),
+> now the fallback demo.** The repo's **headline UI is the Whole-Chart Review view**
+> (`ui/render_chart.py` → `ui/whole_chart.html`); its spec is the "UI spec" section
+> of `docs/demo-script.md`. Use this brief for the radiology fallback UI.
+
 You're redesigning the single-screen web UI for **Safety Net**. Read the whole
 brief, then produce the deliverable in §13. Where the brief gives a *visual*
 suggestion, treat it as a floor you can improve on — but treat the

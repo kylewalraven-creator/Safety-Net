@@ -97,7 +97,7 @@ The agent does not flag *existence*. For every candidate it reasons: **is this r
 Reasoning-first, ranked, and **sparse** — this is where we either respect or violate the dashboard anti-project. Extends the frozen Safety Net JSON contract.
 
 **Per finding:**
-- **`title`** — one line naming the dot ("Incidental 9 mm lung nodule reported Day 3, never surfaced in discharge plan").
+- **`title`** — one line naming the dot ("Incidental 9 mm lung nodule reported Day 2, never surfaced in discharge plan").
 - **`risk`** — High / Medium / Low, scored on **consequence of the miss**, not finding severity alone. (A benign-looking nodule that needs tracking can be High because the miss breaks continuity; a documented-and-addressed critical finding is not surfaced at all.)
 - **`connection`** — the reasoning: which ≥2 events across time/domain connect, and why no single view catches it. **This is the hero content the demo dwells on.**
 - **`timeline`** — the ordered events that constitute the thread, each with: `day`, `note_type`, `source_id`, and a **verbatim excerpt** (the anti-hallucination anchor). E.g., Day 3 CT report excerpt → Day 14 discharge problem-list excerpt showing absence.
@@ -107,7 +107,7 @@ Reasoning-first, ranked, and **sparse** — this is where we either respect or v
 - **`confidence`** — 0–1, with the abstain threshold applied downstream.
 
 **Top level:**
-- **`summary`** — one line ("3 unreconciled threads across a 14-day stay"). This is the **2-second bookend**, not a dashboard.
+- **`summary_line`** — one line ("3 unreconciled threads across a 14-day stay"). This is the **2-second bookend**, not a dashboard.
 - **`findings`** — ranked by `risk × confidence`, hard-capped at top N.
 - **`cleared`** — what was considered and correctly suppressed, collapsed by default (surfaced only in Q&A — it's the noise-discipline proof).
 
@@ -119,8 +119,10 @@ The demo shows the summary for 2 seconds, then opens **one** finding's `connecti
 
 Each is authored into the synthetic chart with known ground truth. Format: *what's in the chart → what a single-pass discharge view sees → what the agent connects.* **H4 (held anticoagulant) is the primary live hero; H_SUPPRESS is the mandatory second hero (proves precision); H1 stays in the sweep as the Safety Net bridge.** The rest are sweep depth and the Q&A bench.
 
+> **Authoritative specifics live in `whole-chart-synthetic-data-spec.md` + `data/chart/manifest.json`.** The clinical details below (exact days, lab values, pinned strings) are the original exploratory sketch; where they differ from the final chart, the spec and manifest win. **H5–H8 are Q&A bench only — not planted in the chart** (the manifest plants H1, H2, H3, H4, H_SUPPRESS).
+
 **H1 — orphaned incidental (looks closed, isn't) — now precomputed sweep depth + Safety Net bridge.**
-Admitted Day 1 for an unrelated problem (e.g., cellulitis or GI bleed). Day 3 CT abdomen/pelvis for abdominal pain; impression tail notes "incidental 9 mm pulmonary nodule at the lung base — recommend follow-up chest CT in 3 months." The admission focus resolves; Day 14 discharge problem list and follow-up section never mention it. *Single pass:* clean discharge. *Agent:* connects Day 3 report tail → absence in Day 14 plan → escalates (needs tracked 3-month CT + scheduled appointment + PCP notification). Cleanest, most legible *escalate* case — which is exactly why it's the sweep-depth bridge, not the headline (see Hero selection below): it rhymes with the original Safety Net thread and lands on the incumbent's home turf.
+Admitted Day 1 for an unrelated problem (e.g., cellulitis or GI bleed). Day 2 CT abdomen/pelvis for abdominal pain; impression tail notes "incidental 9 mm pulmonary nodule at the lung base — recommend follow-up chest CT in 3 months." The admission focus resolves; Day 14 discharge problem list and follow-up section never mention it. *Single pass:* clean discharge. *Agent:* connects Day 2 report tail → absence in Day 14 plan → escalates (needs tracked 3-month CT + scheduled appointment + PCP notification). Cleanest, most legible *escalate* case — which is exactly why it's the sweep-depth bridge, not the headline (see Hero selection below): it rhymes with the original Safety Net thread and lands on the incumbent's home turf.
 
 **H_SUPPRESS — HERO: apparent gap actually closed (looks open, is closed).**
 An incidental or consult rec appears absent from the structured discharge problem list — **but** a discharge addendum or the PCP letter addresses it in different wording. *Naive keyword matching:* flags it as dropped (false positive). *Agent:* reads the addendum, recognizes semantic equivalence, **suppresses**, and cites where it was addressed. This is the false-positive-suppression proof and the direct answer to Ricci's "how is this not a keyword checker?"
@@ -205,7 +207,7 @@ Framed as extending the existing engine. Dependencies and critical path called o
 
 **Step 3 — Timeline reconstruction (NEW, small, deterministic).** Sort events by timestamp; group into threads by entity (this nodule, this med, this culture, this creatinine series); link earlier events to later events referencing the same entity. Lightweight entity-grouping + temporal sort — **not** a knowledge graph. Keep it in code, not LLM, for reliability.
 
-**Step 4 — Reasoning (Opus — the hero, reuse reconciliation engine).** Per thread, Opus reasons whether it's reconciled/addressed by discharge. Extend the five-axis reconciliation to threads (acknowledged / addressed in plan / contradicted / pending). Opus returns status + confidence + verbatim excerpts + the specific question. Inputs: the thread's events + the discharge summary + relevant plan sections. Precision posture in the prompt.
+**Step 4 — Reasoning (Opus — the hero, reuse reconciliation engine).** Per thread, Opus reasons whether it's reconciled/addressed by discharge. Adapt the reconciliation engine to threads, emitting one of four statuses (`CONFIRMED_ADDRESSED` / `UNCONFIRMED` / `CONTRADICTED` / `PENDING_AT_DISCHARGE`). Opus returns status + confidence + verbatim excerpts + the specific question. Inputs: the thread's events + the discharge summary + relevant plan sections. Precision posture in the prompt.
 
 **Step 5 — Evidence grounding / validation (reuse + automate).** Validate every citation is a verbatim substring of a real source note; drop/suppress the unvalidated. Rank by risk × confidence; apply the top-N cap and abstain threshold.
 

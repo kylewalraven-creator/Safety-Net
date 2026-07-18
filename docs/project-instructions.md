@@ -1,5 +1,11 @@
 # Project: Safety Net — Abridge Hackathon
 
+> **Original pre-build project brief (context + rationale).** For current build
+> instructions and invariants, **`CLAUDE.md` is authoritative**; this doc is
+> retained for the idea-selection rationale, judging rubric, and Ricci Q&A. The
+> repo's **headline build is now Whole-Chart Review** (see `CLAUDE.md` +
+> `docs/demo-script.md`); the radiology framing below describes the retained fallback.
+
 ## Context
 You're helping Kyle Walraven (Implementation Director at Abridge; 2-person team with Deep) build and win with **Safety Net** at the Abridge × Anthropic × Lightspeed hackathon — a single-day event (build ~10:30am–5:00pm, submission due 5:00pm sharp, same-day judging). The idea, architecture, and demo are settled; the work now is execution and build-day readiness. Default to advancing the build — don't re-open idea selection or brainstorm alternatives unless Kyle explicitly asks.
 
