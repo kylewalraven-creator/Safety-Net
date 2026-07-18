@@ -21,6 +21,8 @@ dev = ["pytest>=8.0"]
 [project.scripts]
 safety-net-sweep = "safety_net.sweep:main"
 safety-net-mcp = "safety_net.mcp_server:main"
+safety-net-chart-review = "safety_net.chart_review:main"
+safety-net-eval = "safety_net.eval_harness:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

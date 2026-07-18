@@ -77,3 +77,32 @@ Full first slice built and verified end-to-end: preflight 11/11 live, Case A →
 escalate + question, Case B → superseded, offline tests 8/8, UI renders with
 highlighted citations. Working branch: `claude/safety-net-repo-setup-f3yb0f`.
 See `docs/build-status.md` for decisions, rationale, what's stubbed, and next steps.
+
+## Whole-Chart Review pivot (branch `claude/safety-net-whole-chart-pivot-9hlur9`)
+A net-new workflow on the same engine: review a **14-day admission at discharge**
+and surface only the threads that fell through (escalate), while **suppressing**
+look-alikes closed in different words (equivalence, not keyword match). Frozen
+contract: `docs/whole-chart-schema-contract.md` → implemented as **Section 3** of
+`models.py` (additive; Sections 1–2 untouched, so Safety Net still runs).
+
+- **Pipeline:** `extract.extract_chart` (Haiku, widened 9-type `SignalType`) →
+  `timeline.build_threads` (deterministic entity threading, NEW) →
+  `reconcile.reconcile_thread` (Opus, doc-03 prompt, 4 statuses) →
+  `grounding.apply_surfacing` (citation validation + `TOP_N=4`/`ABSTAIN=0.6`) →
+  `chart_review.run_review` → `ChartReviewResult`.
+- **Prompts (verbatim invariant applies):** `prompts/whole_chart_reasoning_system.txt`
+  (doc-03 system prompt + two few-shot anchors), `whole_chart_extraction_system.txt`.
+- **Self-verify:** `python -m safety_net.eval_harness` → live-set gate (H4
+  UNCONFIRMED/High, H1 surfaces, H_SUPPRESS suppressed & cited to the PCP letter,
+  **precision == 1.0**, all citations validate). Offline tests: `tests/test_whole_chart.py`.
+- **Data / offline cache:** `data/chart/{chart.json,manifest.json,cache/}`.
+  Regenerate the chart with `scripts/generate_chart.py`; author the offline cache
+  (no-key envs) with `scripts/author_cache.py`, or capture a live cache with
+  `chart_review --write-cache`. UI: `python ui/render_chart.py` → `ui/whole_chart.html`.
+- **Two live heroes:** H4 (held apixaban never restarted → escalate), H_SUPPRESS
+  (post-diverticulitis colonoscopy closed as "lower endoscopy" in the PCP letter →
+  suppress). Their pinned strings in `docs/whole-chart-synthetic-data-spec.md` are
+  verbatim — editing them breaks citation validation and the equivalence demo.
+- **Two noted schema-name deviations** (values/shape match the contract): contract
+  `SweepResult` → `ChartReviewResult` (avoids Section 2 collision); `Status` →
+  `ThreadStatus`.

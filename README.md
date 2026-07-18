@@ -83,6 +83,59 @@ python -m safety_net.mcp_server
 Without a network/key, the sweep and UI fall back to `data/cache/` so the demo
 runs offline.
 
+## Whole-Chart Review (pivot)
+
+A net-new workflow that **extends the same engine** to a critical moment:
+instead of one follow-up recommendation, the agent reviews an entire **14-day
+inpatient admission at discharge** and connects dots no single clinician or
+specialty would — an orphaned incidental, a result pending at discharge, a
+trend visible only across days, a dropped consult rec, a med-reconciliation gap.
+It surfaces only the threads that genuinely fell through (hard-capped, ranked by
+consequence-of-the-miss), each with a verbatim citation and a specific,
+human-answerable question — and it **suppresses** look-alikes that were actually
+closed in different words (equivalence reasoning, not keyword matching).
+
+Reuses the reconciliation engine, verbatim-citation validation, action drafting,
+the MCP wrapper, and the UI shell. The only new code is entity threading, the
+eval harness, and the widened schemas. Design docs:
+[`docs/whole-chart-schema-contract.md`](docs/whole-chart-schema-contract.md)
+(frozen contract), `-iteration`, `-synthetic-data-spec`, `-reasoning-prompt`,
+`-build-plan`.
+
+```
+# Run the whole-chart review (offline, from the committed cache)
+python -m safety_net.chart_review --use-cache
+
+# Self-verify against the ground-truth manifest (the eval harness gate)
+python -m safety_net.eval_harness          # precision 1.0, suppress correct, citations valid
+
+# Render the reasoning-first UI (writes ui/whole_chart.html; open it)
+python ui/render_chart.py
+
+# With a key: capture a fresh live cache, or run the two heroes live on stage
+python -m safety_net.chart_review --write-cache
+python -m safety_net.chart_review --live-heroes   # H4 + H_SUPPRESS live, rest precomputed
+```
+
+Pipeline: **Haiku** widened signal extraction → deterministic **entity
+threading** (`timeline.py`) → **Opus** per-thread reconciliation (four statuses,
+the suppress/equivalence wedge) → citation validation + `TOP_N`/abstain
+surfacing (`grounding.py`) → `ChartReviewResult`. The two live heroes are
+**H4** (home anticoagulant held for a procedure, never restarted → escalate) and
+**H_SUPPRESS** (post-diverticulitis colonoscopy, closed as "lower endoscopy" in
+the PCP letter → suppressed). Whole-chart layout additions:
+
+```
+src/safety_net/
+  timeline.py             NEW — deterministic entity threading (no LLM)
+  chart_review.py         NEW — whole-chart orchestrator (+ offline cache)
+  eval_harness.py         NEW — citation validator + ground-truth scorer (the gate)
+  grounding.py            NEW — citation validation + rank/surface (TOP_N, abstain)
+data/chart/               14-day synthetic chart, manifest, cache (offline fallback)
+scripts/generate_chart.py Author the synthetic chart (self-validating)
+ui/render_chart.py        Reasoning-first whole-chart UI
+```
+
 ## Notes
 
 - **Synthetic data only.** The hero cases are hand-authored; no PHI.
