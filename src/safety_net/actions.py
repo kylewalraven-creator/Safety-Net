@@ -49,8 +49,6 @@ def _format_input(recommendation: Recommendation, reconciliation: Reconciliation
 def draft_action(
     recommendation: Recommendation,
     reconciliation: ReconciliationResult,
-    *,
-    temperature: float = 0.2,
 ) -> ActionDraft:
     """Draft the outreach for a recommendation that could not be confirmed closed."""
     data = call_json(
@@ -58,7 +56,6 @@ def draft_action(
         ACTION_DRAFT_SYSTEM,
         _format_input(recommendation, reconciliation),
         max_tokens=700,
-        temperature=temperature,
     )
     try:
         action_type = ActionType(str(data.get("type", "")).strip())

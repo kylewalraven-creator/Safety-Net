@@ -23,8 +23,6 @@ def reconcile(
     recommendation: Recommendation,
     candidates: list[Candidate],
     as_of_date: str,
-    *,
-    temperature: float = 0.0,
 ) -> ReconciliationResult:
     """Reconcile one recommendation against its candidate studies."""
     payload = ReconciliationInput(
@@ -37,7 +35,6 @@ def reconcile(
         RECONCILIATION_SYSTEM,
         payload.model_dump_json(indent=2),
         max_tokens=4096,
-        temperature=temperature,
     )
     result = ReconciliationResult.model_validate(data)
     # Defensive: the emitted recommendation_id must echo the input id so the

@@ -19,6 +19,10 @@ load_dotenv()  # populate os.environ from a local .env, if one exists
 MODEL_OPUS = "claude-opus-4-8"  # reconciliation + action-drafting
 MODEL_HAIKU = "claude-haiku-4-5-20251001"  # bulk extraction
 
+# Opus 4.8 rejects `temperature` (deprecated for this model → HTTP 400). It is
+# omitted for these models even if a caller passes one, so the bug can't regress.
+_NO_TEMPERATURE_MODELS = {MODEL_OPUS}
+
 _client: anthropic.Anthropic | None = None
 
 
@@ -45,32 +49,47 @@ def has_api_key() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
+def _request_params(
+    model: str, system: str, user: str, max_tokens: int, temperature: float | None
+) -> dict:
+    """Build messages.create kwargs, omitting `temperature` for models that
+    reject it (Opus 4.8) or when it is None."""
+    params: dict = {
+        "model": model,
+        "max_tokens": max_tokens,
+        "system": system,
+        "messages": [{"role": "user", "content": user}],
+    }
+    if temperature is not None and model not in _NO_TEMPERATURE_MODELS:
+        params["temperature"] = temperature
+    return params
+
+
 def call_model(
     model: str,
     system: str,
     user: str,
     *,
     max_tokens: int = 2048,
-    temperature: float = 0.0,
+    temperature: float | None = None,
 ) -> str:
     """Single-turn call; returns concatenated text output."""
     resp = get_client().messages.create(
-        model=model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        system=system,
-        messages=[{"role": "user", "content": user}],
+        **_request_params(model, system, user, max_tokens, temperature)
     )
     return "".join(
         block.text for block in resp.content if getattr(block, "type", None) == "text"
     )
 
 
-def call_opus(system: str, user: str, *, max_tokens: int = 4096, temperature: float = 0.0) -> str:
-    return call_model(MODEL_OPUS, system, user, max_tokens=max_tokens, temperature=temperature)
+def call_opus(system: str, user: str, *, max_tokens: int = 4096) -> str:
+    # Opus 4.8 does not accept `temperature`; rely on the model default.
+    return call_model(MODEL_OPUS, system, user, max_tokens=max_tokens)
 
 
-def call_haiku(system: str, user: str, *, max_tokens: int = 1536, temperature: float = 0.0) -> str:
+def call_haiku(
+    system: str, user: str, *, max_tokens: int = 1536, temperature: float | None = 0.0
+) -> str:
     return call_model(MODEL_HAIKU, system, user, max_tokens=max_tokens, temperature=temperature)
 
 
@@ -116,7 +135,7 @@ def call_json(
     user: str,
     *,
     max_tokens: int = 4096,
-    temperature: float = 0.0,
+    temperature: float | None = None,
     retries: int = 1,
 ) -> dict:
     """Call the model and parse a single JSON object, retrying once with a
@@ -130,7 +149,8 @@ def call_json(
                 user
                 + "\n\nReturn ONLY the JSON object — no code fences, no commentary."
             )
-            this_temp = max(temperature, 0.2)
+            if this_temp is not None:
+                this_temp = max(this_temp, 0.2)
         raw = call_model(model, system, this_user, max_tokens=max_tokens, temperature=this_temp)
         try:
             return json.loads(extract_json_block(raw))

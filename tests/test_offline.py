@@ -110,6 +110,17 @@ def test_match_candidates_case_a():
     assert ids == ["A-R2"]  # source excluded, other patient excluded, later included
 
 
+def test_opus_omits_temperature():
+    from safety_net.client import MODEL_HAIKU, MODEL_OPUS, _request_params
+
+    # Opus 4.8 rejects temperature -> must never appear, even if passed.
+    assert "temperature" not in _request_params(MODEL_OPUS, "s", "u", 128, 0.0)
+    # Haiku accepts it when provided.
+    assert _request_params(MODEL_HAIKU, "s", "u", 128, 0.0)["temperature"] == 0.0
+    # None is always omitted.
+    assert "temperature" not in _request_params(MODEL_HAIKU, "s", "u", 128, None)
+
+
 def test_extract_json_block():
     assert json.loads(extract_json_block('```json\n{"a": 1}\n```')) == {"a": 1}
     assert json.loads(extract_json_block('prefix {"a": {"b": 2}} suffix')) == {"a": {"b": 2}}
