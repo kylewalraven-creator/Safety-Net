@@ -1,0 +1,66 @@
+{
+  "chart_id": "chart_div_4471",
+  "items": [
+    {
+      "planted_id": "H1_nodule",
+      "entity": "pulmonary_nodule_lll",
+      "note_types": [
+        "radiology_report",
+        "discharge_summary"
+      ],
+      "expected_status": "UNCONFIRMED",
+      "expected_risk": "High",
+      "surfaced": true,
+      "live": "precompute"
+    },
+    {
+      "planted_id": "H_SUPPRESS_colo",
+      "entity": "colonoscopy_followup",
+      "note_types": [
+        "consult_note",
+        "pcp_letter"
+      ],
+      "expected_status": "CONFIRMED_ADDRESSED",
+      "expected_risk": null,
+      "surfaced": false,
+      "live": "live"
+    },
+    {
+      "planted_id": "H4_apixaban",
+      "entity": "apixaban",
+      "note_types": [
+        "med_reconciliation",
+        "progress_note",
+        "discharge_summary"
+      ],
+      "expected_status": "UNCONFIRMED",
+      "expected_risk": "High",
+      "surfaced": true,
+      "live": "live"
+    },
+    {
+      "planted_id": "H2_bcx",
+      "entity": "blood_culture_d11",
+      "note_types": [
+        "micro_result",
+        "discharge_summary"
+      ],
+      "expected_status": "PENDING_AT_DISCHARGE",
+      "expected_risk": "Medium",
+      "surfaced": true,
+      "live": "precompute"
+    },
+    {
+      "planted_id": "H3_aki",
+      "entity": "creatinine_series",
+      "note_types": [
+        "lab_result",
+        "discharge_summary"
+      ],
+      "expected_status": "UNCONFIRMED",
+      "expected_risk": "Medium",
+      "surfaced": true,
+      "live": "precompute"
+    }
+  ]
+}

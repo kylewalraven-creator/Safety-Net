@@ -1,0 +1,221 @@
+CHART chart_div_4471 — Robert Hensley (64M), Acute complicated sigmoid diverticulitis with pericolonic abscess
+Admitted 2026-06-22 — Discharged 2026-07-05  (25 notes)
+==============================================================================
+
+[n_hp_d1] Day 1  2026-06-22T08:30:00  history_and_physical / hospitalist
+------------------------------------------------------------------------------
+HISTORY AND PHYSICAL — ADMISSION
+Hospital Day 1. Hospitalist admission.
+
+CHIEF COMPLAINT: Left lower quadrant abdominal pain and fever.
+
+HISTORY OF PRESENT ILLNESS: Mr. Robert Hensley is a 64-year-old man with a history of paroxysmal atrial fibrillation, hypertension, and hyperlipidemia who presents with three days of progressive left lower quadrant pain, subjective fevers, and decreased appetite. He denies chest pain, shortness of breath, hematochezia, or melena. In the emergency department he was febrile to 38.6°C with left lower quadrant tenderness. A CT of the abdomen and pelvis was ordered.
+
+PAST MEDICAL HISTORY: Paroxysmal atrial fibrillation; hypertension; hyperlipidemia.
+
+HOME MEDICATIONS: apixaban, lisinopril, atorvastatin (see medication reconciliation).
+
+ASSESSMENT AND PLAN:
+1. Acute diverticulitis, likely complicated — await CT; start empiric intravenous antibiotics; interventional radiology as indicated.
+2. Paroxysmal atrial fibrillation — rate controlled; anticoagulation addressed in the peri-procedure note given anticipated intervention.
+3. Hypertension — continue home lisinopril.
+4. Hyperlipidemia — continue home atorvastatin.
+
+[n_medrec_d1] Day 1  2026-06-22T09:15:00  med_reconciliation / pharmacist
+------------------------------------------------------------------------------
+MEDICATION RECONCILIATION — ADMISSION
+Completed by pharmacy.
+HOME MEDICATIONS: apixaban 5 mg twice daily (for paroxysmal atrial fibrillation); lisinopril 10 mg daily; atorvastatin 40 mg daily.
+Allergies: no known drug allergies.
+Reconciliation note: Home lisinopril and atorvastatin to be continued inpatient. Apixaban addressed separately in the peri-procedure holding note given planned drainage.
+
+[n_hold_d1] Day 1  2026-06-22T10:00:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+PERI-PROCEDURE ANTICOAGULATION NOTE
+Hospital Day 1.
+Apixaban held on admission in anticipation of percutaneous drain placement. Last dose was the evening prior to admission. Mechanical venous thromboembolism prophylaxis with sequential compression devices is in place. Anticoagulation to be reassessed after the drainage procedure.
+
+[n_radorder_d1] Day 1  2026-06-22T10:30:00  radiology_order / hospitalist
+------------------------------------------------------------------------------
+CT ABDOMEN/PELVIS — ORDER AND PRELIMINARY READ
+Hospital Day 1.
+Indication: left lower quadrant pain, fever, leukocytosis; evaluate for diverticulitis/abscess.
+PRELIMINARY: Sigmoid diverticulitis with a pericolonic fluid collection concerning for abscess. Final report to follow. Interventional radiology consulted for possible drainage.
+
+[n_ir_d1] Day 1  2026-06-22T14:20:00  procedure_note / interventional_radiologist
+------------------------------------------------------------------------------
+INTERVENTIONAL RADIOLOGY — PROCEDURE NOTE
+Hospital Day 1.
+Procedure: CT-guided percutaneous catheter drainage of pericolonic abscess.
+An 8 French pigtail catheter was placed into the pericolonic collection under CT guidance. Approximately 45 mL of purulent fluid was aspirated and sent for culture. The catheter was secured and placed to gravity drainage. The patient tolerated the procedure well without immediate complication.
+
+[n_labs_d1] Day 1  2026-06-22T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 1):
+WBC 15.2 K/uL; Hemoglobin 13.8 g/dL; Platelets 240 K/uL.
+BASIC METABOLIC PANEL (Day 1):
+Sodium 137 mmol/L; Potassium 4.1 mmol/L; Creatinine 0.9 mg/dL; BUN 18 mg/dL; Glucose 110 mg/dL.
+
+[n_ct_d2] Day 2  2026-06-23T11:00:00  radiology_report / radiologist
+------------------------------------------------------------------------------
+CT ABDOMEN AND PELVIS WITH CONTRAST — FINAL REPORT
+Hospital Day 2.
+HISTORY: Left lower quadrant pain, fever, leukocytosis.
+TECHNIQUE: Contrast-enhanced CT of the abdomen and pelvis.
+FINDINGS: Sigmoid diverticulosis with focal wall thickening and pericolonic fat stranding consistent with acute diverticulitis. There is a 4.2 cm rim-enhancing pericolonic fluid collection consistent with an abscess. A percutaneous drainage catheter is in place with the tip within the collection. No free intraperitoneal air. The liver, spleen, pancreas, adrenal glands, and kidneys are unremarkable. Visualized lung bases demonstrate a small nodule as described below.
+IMPRESSION:
+1. Acute sigmoid diverticulitis with a 4.2 cm pericolonic abscess, amenable to percutaneous drainage.
+2. Incidental 9 mm solid nodule in the left lower lobe at the lung base. Recommend follow-up chest CT in 3 months to document stability, per Fleischner Society guidelines.
+
+[n_prog_d2] Day 2  2026-06-23T08:00:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 2.
+SUBJECTIVE: Improved pain after drainage. Tolerating clear liquids.
+OBJECTIVE: Afebrile overnight. Drain with 40 mL serosanguineous-purulent output. Abdomen soft, less tender.
+ASSESSMENT/PLAN: Complicated sigmoid diverticulitis, status post percutaneous drain. Continue intravenous ceftriaxone and metronidazole. Await final CT read and abscess fluid cultures. Continue home lisinopril and atorvastatin.
+
+[n_labs_d3] Day 3  2026-06-24T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 3):
+WBC 12.8 K/uL; Hemoglobin 13.5 g/dL; Platelets 245 K/uL.
+BASIC METABOLIC PANEL (Day 3):
+Sodium 138 mmol/L; Potassium 4.0 mmol/L; Creatinine 1.2 mg/dL; BUN 24 mg/dL; Glucose 104 mg/dL.
+
+[n_prog_d3] Day 3  2026-06-24T08:10:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 3.
+SUBJECTIVE: Continued improvement. Pain well controlled.
+OBJECTIVE: Afebrile. Drain output decreasing (25 mL). Abdomen soft.
+ASSESSMENT/PLAN: Diverticulitis improving on intravenous antibiotics. Creatinine mildly up from admission, attributed to reduced oral intake; encourage fluids. Continue current regimen.
+
+[n_gi_d4] Day 4  2026-06-25T13:30:00  consult_note / gastroenterologist
+------------------------------------------------------------------------------
+GASTROENTEROLOGY CONSULT NOTE
+Hospital Day 4.
+Reason for consult: complicated sigmoid diverticulitis, advise on management and follow-up.
+ASSESSMENT: Acute complicated sigmoid diverticulitis with pericolonic abscess, responding to percutaneous drainage and intravenous antibiotics. No indication for urgent endoscopy during the acute inflammatory phase.
+RECOMMENDATIONS:
+Given the complicated diverticulitis, recommend outpatient colonoscopy in 6–8 weeks after full recovery to exclude an underlying malignancy or stricture.
+
+[n_labs_d5] Day 5  2026-06-26T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 5):
+WBC 10.5 K/uL; Hemoglobin 13.4 g/dL; Platelets 250 K/uL.
+BASIC METABOLIC PANEL (Day 5):
+Sodium 138 mmol/L; Potassium 4.0 mmol/L; Creatinine 1.6 mg/dL; BUN 30 mg/dL; Glucose 100 mg/dL.
+
+[n_micro_d5] Day 5  2026-06-26T12:00:00  micro_result / microbiology_lab
+------------------------------------------------------------------------------
+MICROBIOLOGY — CULTURE RESULT
+Source: Pericolonic abscess fluid (collected Day 1).
+GRAM STAIN: Many polymorphonuclear leukocytes; mixed gram-negative rods and gram-positive cocci.
+CULTURE: Escherichia coli and Bacteroides fragilis isolated.
+SUSCEPTIBILITIES: Escherichia coli susceptible to ciprofloxacin. Bacteroides fragilis susceptible to metronidazole.
+
+[n_prog_d5] Day 5  2026-06-26T08:05:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 5.
+SUBJECTIVE: Feeling better. Appetite returning.
+OBJECTIVE: Afebrile. Drain output 15 mL. Abdomen benign.
+ASSESSMENT/PLAN: Abscess fluid culture grew Escherichia coli and Bacteroides fragilis, both susceptible to the planned oral step-down of ciprofloxacin and metronidazole; current coverage is appropriate and no change is needed. Creatinine 1.6 today; likely prerenal from poor intake — continue intravenous fluids and monitor. Antibiotics do not require renal dose adjustment at this level.
+
+[n_labs_d8] Day 8  2026-06-29T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 8):
+WBC 8.9 K/uL; Hemoglobin 13.3 g/dL; Platelets 255 K/uL.
+BASIC METABOLIC PANEL (Day 8):
+Sodium 139 mmol/L; Potassium 4.2 mmol/L; Creatinine 1.4 mg/dL; BUN 25 mg/dL; Glucose 98 mg/dL.
+
+[n_prog_d8] Day 8  2026-06-29T08:15:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 8.
+SUBJECTIVE: No complaints. Ambulating in halls.
+OBJECTIVE: Afebrile. Drain output minimal (8 mL). Abdomen soft, nontender.
+ASSESSMENT/PLAN: Diverticulitis resolving. Creatinine improving with hydration. Plan continued intravenous antibiotics with transition to oral prior to discharge. Continue home lisinopril and atorvastatin.
+
+[n_labs_d11] Day 11  2026-07-02T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 11):
+WBC 13.5 K/uL; Hemoglobin 13.2 g/dL; Platelets 260 K/uL.
+BASIC METABOLIC PANEL (Day 11):
+Sodium 138 mmol/L; Potassium 4.1 mmol/L; Creatinine 1.2 mg/dL; BUN 20 mg/dL; Glucose 102 mg/dL.
+
+[n_prog_d11] Day 11  2026-07-02T16:40:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 11.
+SUBJECTIVE: Reports feeling warm this afternoon.
+OBJECTIVE: Temperature spike to 38.9°C. Otherwise hemodynamically stable. Abdomen soft; drain site clean.
+ASSESSMENT/PLAN: Single fever spike. Blood cultures drawn; continue current antibiotics and monitor closely for recurrence.
+
+[n_micro_d11] Day 11  2026-07-02T17:30:00  micro_result / microbiology_lab
+------------------------------------------------------------------------------
+MICROBIOLOGY — PRELIMINARY
+Source: Blood culture x2 (peripheral).
+Blood cultures x2 drawn for temperature to 38.9°C. Result: pending.
+
+[n_labs_d12] Day 12  2026-07-03T06:00:00  lab_result / laboratory
+------------------------------------------------------------------------------
+COMPLETE BLOOD COUNT (Day 12):
+WBC 9.8 K/uL; Hemoglobin 13.3 g/dL; Platelets 258 K/uL.
+BASIC METABOLIC PANEL (Day 12):
+Sodium 139 mmol/L; Potassium 4.0 mmol/L; Creatinine 1.1 mg/dL; BUN 18 mg/dL; Glucose 99 mg/dL.
+
+[n_prog_d12] Day 12  2026-07-03T08:20:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 12.
+SUBJECTIVE: Feels back to baseline. No recurrent fevers.
+OBJECTIVE: Afebrile for 24 hours. White count normalized. Drain output negligible; interventional radiology to remove catheter today.
+ASSESSMENT/PLAN: Clinically recovered. Transition to oral antibiotics planned. Anticipate discharge in the next 1–2 days.
+
+[n_prog_d13] Day 13  2026-07-04T08:25:00  progress_note / hospitalist
+------------------------------------------------------------------------------
+HOSPITALIST PROGRESS NOTE — Hospital Day 13.
+SUBJECTIVE: No complaints. Eating well, ambulating independently.
+OBJECTIVE: Afebrile. Drain removed yesterday; site clean and dry.
+ASSESSMENT/PLAN: Transitioned to oral ciprofloxacin and metronidazole and tolerating. Plan discharge tomorrow with outpatient follow-up. Continue home lisinopril and atorvastatin.
+
+[n_dc_d14] Day 14  2026-07-05T11:00:00  discharge_summary / hospitalist
+------------------------------------------------------------------------------
+DISCHARGE SUMMARY
+Patient: Robert Hensley    MRN: PT-DIV-4471
+Admitted: 2026-06-22    Discharged: 2026-07-05
+
+DISCHARGE DIAGNOSES:
+1. Acute complicated sigmoid diverticulitis with pericolonic abscess, status post CT-guided percutaneous drainage.
+2. Paroxysmal atrial fibrillation (chronic).
+3. Hypertension.
+4. Hyperlipidemia.
+
+HOSPITAL COURSE:
+Mr. Hensley is a 64-year-old man who presented with left lower quadrant pain and fever and was found to have acute sigmoid diverticulitis with a 4.2 cm pericolonic abscess. Interventional radiology placed a percutaneous drain on Day 1 with return of purulent fluid. He was treated with intravenous antibiotics with gradual clinical improvement; abscess fluid culture grew enteric flora susceptible to the chosen regimen, and coverage was confirmed appropriate. He had a single fever spike on hospital Day 11 that resolved with continued therapy. The drain was removed once output was minimal. He tolerated a regular diet and was ambulating independently at discharge. He is discharged in stable condition to complete an oral antibiotic course.
+
+DISCHARGE MEDICATIONS:
+1. Ciprofloxacin 500 mg by mouth twice daily to complete a 10-day course.
+2. Metronidazole 500 mg by mouth three times daily to complete a 10-day course.
+3. Acetaminophen 650 mg by mouth every 6 hours as needed for pain.
+4. Continue home lisinopril 10 mg daily and atorvastatin 40 mg daily.
+
+FOLLOW-UP:
+1. Colorectal surgery in 2 weeks for drain site evaluation.
+2. Primary care physician within 1 week.
+3. Complete the remaining oral antibiotic course as prescribed.
+
+[n_add_d14] Day 14  2026-07-05T11:30:00  discharge_addendum / hospitalist
+------------------------------------------------------------------------------
+DISCHARGE SUMMARY — ADDENDUM
+Clarification regarding the hospital course: the percutaneous drain was removed on hospital Day 12 after output fell below 10 mL over 24 hours and a repeat limited ultrasound showed near-complete resolution of the collection. The Day 11 temperature elevation resolved without recurrence, and the patient remained afebrile for 48 hours prior to discharge.
+
+[n_pcp_d14] Day 14  2026-07-05T12:00:00  pcp_letter / hospitalist
+------------------------------------------------------------------------------
+Dear Doctor,
+
+Thank you for your continued care of Mr. Robert Hensley, a 64-year-old man discharged today following a two-week admission for acute complicated sigmoid diverticulitis with a pericolonic abscess. His course was managed with CT-guided percutaneous drainage and intravenous antibiotics, transitioning to an oral regimen at discharge (ciprofloxacin and metronidazole to complete a 10-day course). He improved steadily and was afebrile and tolerating a regular diet at discharge.
+
+Please see him in your office within one week to review his recovery and antibiotic course. He will also follow up with colorectal surgery in two weeks for drain site evaluation.
+
+Please arrange for the patient to undergo lower endoscopy with gastroenterology in approximately two months, once he has recovered from this episode, to evaluate the colon following complicated diverticulitis.
+
+His home lisinopril and atorvastatin were continued without change. Please continue to manage his blood pressure and lipids as an outpatient.
+
+Warm regards,
+Hospitalist Service
