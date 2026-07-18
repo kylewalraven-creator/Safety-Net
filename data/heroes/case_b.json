@@ -1,0 +1,28 @@
+{
+  "case_id": "case_b",
+  "title": "Looks open, is closed (suppress)",
+  "patient_id": "PT-B-7749",
+  "patient_name": "Harold Nkemelu",
+  "as_of_date": "2026-07-18",
+  "expected_closure_state": "superseded",
+  "expected_escalation": false,
+  "note": "Flagged overdue by naive date logic, but a later superior PET/CT explicitly characterized the same nodule as benign. Reconciliation supersedes it and stays silent — no false alarm.",
+  "reports": [
+    {
+      "report_id": "B-R1",
+      "patient_id": "PT-B-7749",
+      "date": "2024-06-15",
+      "modality": "CT chest without contrast",
+      "specialty": "radiology",
+      "full_text": "EXAM: CT CHEST WITHOUT CONTRAST\nDATE: 2024-06-15\nHISTORY: 64-year-old with an incidental pulmonary nodule noted on a prior radiograph.\n\nTECHNIQUE: Non-contrast helical CT of the chest.\n\nFINDINGS:\nLungs: An 11 mm solid nodule is noted in the right middle lobe. No cavitation. No additional suspicious nodules. No effusion.\nMediastinum: No adenopathy.\nBones: Unremarkable.\n\nIMPRESSION:\n1. Indeterminate 11 mm solid nodule in the right middle lobe. Recommend follow-up CT chest in 3 months to evaluate for interval change."
+    },
+    {
+      "report_id": "B-R2",
+      "patient_id": "PT-B-7749",
+      "date": "2024-09-22",
+      "modality": "PET/CT skull base to mid-thigh",
+      "specialty": "radiology",
+      "full_text": "EXAM: PET/CT SKULL BASE TO MID-THIGH\nDATE: 2024-09-22\nHISTORY: 64-year-old with an indeterminate right middle lobe pulmonary nodule; evaluate metabolic activity.\n\nTECHNIQUE: Whole-body FDG PET/CT from skull base to mid-thigh following administration of F-18 FDG.\n\nFINDINGS:\nThere is no hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule. No FDG-avid pulmonary, mediastinal, or hilar disease. No other focal hypermetabolic abnormality.\n\nIMPRESSION:\nNo hypermetabolic activity corresponding to the previously noted 11 mm right middle lobe nodule; findings favor a benign etiology. No evidence of FDG-avid malignancy."
+    }
+  ]
+}

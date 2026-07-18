@@ -1,0 +1,28 @@
+{
+  "case_id": "case_a",
+  "title": "Looks closed, isn't (escalate)",
+  "patient_id": "PT-A-2213",
+  "patient_name": "Margaret Ellison",
+  "as_of_date": "2026-07-18",
+  "expected_closure_state": "escalate",
+  "expected_escalation": true,
+  "note": "A capable chest CT was performed in-window but never mentions the left-upper-lobe nodule. Order-matching would close this; acknowledgment-gated reconciliation escalates it.",
+  "reports": [
+    {
+      "report_id": "A-R1",
+      "patient_id": "PT-A-2213",
+      "date": "2024-10-08",
+      "modality": "CT chest without contrast",
+      "specialty": "radiology",
+      "full_text": "EXAM: CT CHEST WITHOUT CONTRAST\nDATE: 2024-10-08\nHISTORY: 58-year-old with remote tobacco use; evaluation for pulmonary nodule.\n\nTECHNIQUE: Helical non-contrast CT of the chest with axial acquisition and coronal/sagittal reconstructions.\n\nFINDINGS:\nLungs: A solid 9 mm nodule is present in the left upper lobe. No prior imaging is available for comparison. No additional suspicious pulmonary nodules. No consolidation.\nMediastinum: No lymphadenopathy. Normal heart size.\nPleura: No pleural effusion or pneumothorax.\nBones: No aggressive osseous lesion.\n\nIMPRESSION:\n1. Solid 9 mm nodule in the left upper lobe, indeterminate in the absence of priors. Recommend follow-up CT chest in 6 months to assess for interval change."
+    },
+    {
+      "report_id": "A-R2",
+      "patient_id": "PT-A-2213",
+      "date": "2025-03-18",
+      "modality": "CT angiogram chest (PE protocol)",
+      "specialty": "radiology",
+      "full_text": "EXAM: CT ANGIOGRAM, CHEST (PE PROTOCOL)\nDATE: 2025-03-18\nHISTORY: 58-year-old with acute shortness of breath and cough; rule out pulmonary embolism.\n\nTECHNIQUE: CT angiography of the chest performed with intravenous contrast, pulmonary embolism protocol.\n\nFINDINGS:\nPulmonary arteries: No filling defect to suggest pulmonary embolism.\nLungs: Mild bronchial wall thickening. No lobar consolidation. No pleural effusion.\nHeart/mediastinum: Normal cardiac silhouette. No pericardial effusion.\n\nIMPRESSION:\nNo acute pulmonary embolism. Mild bronchial wall thickening compatible with bronchitis. No pleural effusion."
+    }
+  ]
+}

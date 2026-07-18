@@ -1,0 +1,50 @@
+[
+  {
+    "report_id": "F-001",
+    "patient_id": "PT-F-1001",
+    "date": "2025-01-12",
+    "modality": "Chest radiograph",
+    "specialty": "radiology",
+    "full_text": "EXAM: CHEST RADIOGRAPH, PA AND LATERAL\nDATE: 2025-01-12\nHISTORY: Cough.\n\nFINDINGS: The lungs are clear without consolidation, effusion, or pneumothorax. Cardiomediastinal silhouette is normal. No acute osseous abnormality.\n\nIMPRESSION: No acute cardiopulmonary process."
+  },
+  {
+    "report_id": "F-002",
+    "patient_id": "PT-F-1002",
+    "date": "2025-02-03",
+    "modality": "CT abdomen and pelvis with contrast",
+    "specialty": "radiology",
+    "full_text": "EXAM: CT ABDOMEN AND PELVIS WITH CONTRAST\nDATE: 2025-02-03\nHISTORY: Right lower quadrant pain; evaluate for appendicitis.\n\nFINDINGS: The appendix is normal in caliber without periappendiceal inflammation. No free fluid or free air. Bowel is normal. No obstruction.\n\nIMPRESSION: Normal appendix. No acute intra-abdominal process."
+  },
+  {
+    "report_id": "F-003",
+    "patient_id": "PT-F-1003",
+    "date": "2025-02-20",
+    "modality": "MRI brain without contrast",
+    "specialty": "radiology",
+    "full_text": "EXAM: MRI BRAIN WITHOUT CONTRAST\nDATE: 2025-02-20\nHISTORY: Chronic headache.\n\nFINDINGS: No acute infarct, hemorrhage, or mass. Normal ventricles and sulci. No abnormal enhancement.\n\nIMPRESSION: Normal MRI of the brain."
+  },
+  {
+    "report_id": "F-004",
+    "patient_id": "PT-F-1004",
+    "date": "2025-03-05",
+    "modality": "Ultrasound right upper quadrant",
+    "specialty": "radiology",
+    "full_text": "EXAM: ULTRASOUND, RIGHT UPPER QUADRANT\nDATE: 2025-03-05\nHISTORY: Right upper quadrant discomfort.\n\nFINDINGS: The gallbladder is normal without stones or wall thickening. Common bile duct is normal in caliber. Liver is normal in echotexture.\n\nIMPRESSION: Normal right upper quadrant ultrasound."
+  },
+  {
+    "report_id": "F-005",
+    "patient_id": "PT-F-1005",
+    "date": "2025-03-27",
+    "modality": "CT head without contrast",
+    "specialty": "radiology",
+    "full_text": "EXAM: CT HEAD WITHOUT CONTRAST\nDATE: 2025-03-27\nHISTORY: Ground-level fall.\n\nFINDINGS: No intracranial hemorrhage, mass effect, or acute territorial infarct. No fracture.\n\nIMPRESSION: No acute intracranial abnormality."
+  },
+  {
+    "report_id": "F-006",
+    "patient_id": "PT-F-1006",
+    "date": "2025-04-14",
+    "modality": "Radiograph left knee",
+    "specialty": "radiology",
+    "full_text": "EXAM: RADIOGRAPH, LEFT KNEE, THREE VIEWS\nDATE: 2025-04-14\nHISTORY: Knee pain after twisting injury.\n\nFINDINGS: No fracture or dislocation. Joint spaces are preserved. No effusion.\n\nIMPRESSION: No acute osseous abnormality of the left knee."
+  }
+]
