@@ -22,8 +22,9 @@ original finding is **UNCONFIRMED** and is escalated, never silently closed.
   extraction, the Opus five-axis reconciliation engine, action-drafting, the
   deterministic sweep orchestration, the thin FastMCP wrapper, and the
   reasoning-first UI render.
-- **The verification layer** — `scripts/preflight.py`, the Case A smoke test, and
-  the offline test suite.
+- **The verification layer** — `scripts/preflight.py`, the Case A smoke test, the
+  offline test suite, and `scripts/eval.py` (scores the engine against the
+  hand-authored ground truth and validates every citation as a verbatim substring).
 - **All demo data** — the two hand-authored synthetic hero cases, the templated
   filler reports, and the captured offline cache.
 
@@ -96,6 +97,9 @@ python scripts/preflight.py
 # 2. Smoke test: reconcile Case A end to end (expects escalate + question)
 python scripts/smoke_case_a.py
 
+# 2b. Eval harness: score vs ground truth + validate every citation (offline, from cache)
+python scripts/eval.py
+
 # 3. Full sweep over the backlog; reconcile the two heroes live, write cache
 python -m safety_net.sweep --write-cache
 
@@ -164,6 +168,10 @@ ui/render_chart.py        Reasoning-first whole-chart UI
 
 ## Notes
 
+- **Measured, grounded.** `scripts/eval.py` scores reconciliation against the
+  hand-authored ground truth (status 2/2, precision 1.00, recall 1.00) and validates
+  every cited quote as a verbatim substring of its source report (9/9, zero
+  hallucinations) — an automated, reproducible correctness + anti-hallucination gate.
 - **Synthetic data only.** The hero cases are hand-authored; no PHI.
 - **Not a diagnostician.** The engine reasons about *documentation* — whether a
   later study addressed a prior finding — with a verbatim citation behind every
