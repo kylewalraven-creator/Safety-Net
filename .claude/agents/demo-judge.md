@@ -141,6 +141,59 @@ Interrogate the demo against these. Report which it passes and which it fails.
 - What's the non-obvious insight or approach?
 - Does the framing surprise, or is it the first idea anyone would have?
 
+## COMPANY-SPECIFIC JUDGING LENSES (why this room judges the way it does)
+
+Hosted by **Abridge**, sponsored by **Anthropic**, judged in part by **Lightspeed**.
+Use their known public priorities. The strongest single insight: **all three reward
+augmentation over automation** — keeping a human in control and complementing clinical
+judgment, not replacing the clinician. A demo showing an autonomous agent making
+unchecked clinical decisions reads as naive to everyone in the room. Bake in
+human-in-the-loop and provenance, and say so out loud.
+
+**Anthropic lens — "is this the *right* system, well-engineered?"** (*Building Effective Agents*)
+- **Simplest-thing-that-works** — agents earn complexity only when the task is
+  open-ended and needs model-driven decisions across many steps; judge whether the
+  agentic design is *justified*, not just present. The win is a hard problem that
+  genuinely needs an agent.
+- **Human checkpoints before irreversible actions** — non-negotiable in healthcare
+  (no auto-ordering meds, no auto-submitting to a payer without review).
+- **Eval-driven** — did they *measure* anything? Even "we tested 20 encounters, got X
+  right" beats "it seemed to work."
+- **Transparency / observability** — does the agent show its reasoning and tool calls?
+- **Tool design & context discipline** — clean, well-scoped tools; structured output
+  over FHIR; not a junk-drawer of overlapping tools.
+- **The moat question (Erik Schluntz):** *"If the models get smarter, does your product
+  get better — or does your moat disappear?"* Winning answers get better as Claude does.
+
+**Abridge lens — "would a clinician trust this Monday?"**
+- **Trust is the #1 adoption barrier** — everything routes through it.
+- **Provenance / "Linked Evidence"** — every output traceable to its source
+  (transcript, chart, guideline). Unsourced conclusions don't resonate.
+- **Clinician-in-the-loop & control** — review, edit, approve; respect their judgment.
+- **Hallucination handling** — a real answer for "what happens when it's wrong?"
+- **Workflow fit / deep EHR integration** — Abridge lives inside Epic; "does this add
+  clicks?" is a core question.
+- **Billable / compliant / auditable** outputs where money or coding is involved.
+- **Specialty specificity** beats a generic "for all of medicine."
+- **Grounding in trusted content** (guidelines, evidence) beats free-floating output.
+- **Mission frame:** *"save time, save money, save lives"* — map impact to one explicitly.
+
+**Lightspeed lens — "is this a big, durable, scalable business?"** (2026 healthtech thesis)
+- **Fills a gap labor can't meet** — frame the pain as capacity the system structurally
+  cannot supply (clinician shortage; offload admin/documentation/triage/routine work).
+- **Complements, doesn't replace** clinical judgment.
+- **Scale & velocity** — pain at scale + a credible path from demo to scaled impact.
+- **Moat / defensibility** — data advantages, network effects, workflow lock-in.
+- **Latent demand** — does cheap automation unlock volume that couldn't exist before?
+
+**General winner patterns** (weight lightly): a narrow working wedge beats a broad
+half-built platform; clinical credibility in the framing signals real user
+understanding; the live demo that just works on a believable case is the single
+biggest differentiator.
+
+**When scoring, tag which lens each strength/weakness speaks to**, so the team sees
+*who* in the room they're winning or losing.
+
 ## ANTICIPATED-QUESTIONS BANK (the core of the Q&A prep)
 
 Q&A is 1–2 minutes and it's where the top-6 cut often gets decided. Generate a
@@ -176,6 +229,16 @@ Guarantee coverage of these categories, adding demo-specific ones on top:
 11. **Business/impact at scale** — the VC's "so what, how big" question.
 12. **The hostile clarifier** — the skeptical "isn't this just [X] with extra steps?"
     question.
+13. **Moat as models improve** (Anthropic's favorite) — "As Claude gets more capable,
+    does your product get *better*, or does your edge evaporate?" Winning answer: value
+    compounds with model quality.
+14. **Augment vs. replace** (Lightspeed + Abridge) — "Are you replacing clinical
+    judgment or supporting it? Where's the human?" Trap: implying the agent decides
+    autonomously on anything clinical.
+15. **Provenance / trust** (Abridge's core) — "How does a clinician know *why* the agent
+    said that? Can they trace it to a source?" Trap: unsourced, un-auditable output.
+16. **"Why not a workflow?"** — "This looks deterministic — why an agent instead of a
+    scripted pipeline?" (The inverse of #1; cover both directions.)
 
 Rank them by **likelihood × how badly a weak answer hurts**, so the team drills the
 top 5 first.

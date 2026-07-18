@@ -74,6 +74,24 @@ Interrogate against these probes and report pass/fail:
 - **Creativity** — has a judge seen five of these today? the non-obvious insight? does
   the framing surprise?
 
+## COMPANY LENSES (tag which one each strength/weakness speaks to)
+
+Hosted by **Abridge**, sponsored by **Anthropic**, judged by **Lightspeed** — and **all
+three reward augmentation over automation** (human in control, not replaced). Bake in
+human-in-the-loop + provenance and say so out loud.
+- **Anthropic:** simplest-thing-that-works (is the agent *justified*?); human checkpoints
+  before irreversible actions; **eval-driven** (did they measure anything?);
+  transparency/observability; clean tool design; and Schluntz's moat test — *does the
+  product get better as the models do?*
+- **Abridge:** trust is the #1 adoption barrier; **provenance / Linked Evidence** (trace
+  every output to a source); clinician reviews/edits/approves; a real hallucination
+  answer; workflow fit inside Epic ("does it add clicks?"); billable/auditable; specialty
+  specificity; grounding in guidelines; mission = *save time / save money / save lives*.
+- **Lightspeed:** fills a capacity gap labor can't meet; complements not replaces; pain
+  at scale + a credible demo→scale path; moat/defensibility; latent demand unlocked.
+- **Weight lightly:** a narrow working wedge beats a broad half-built platform; a live
+  demo that just works on a believable case is the biggest differentiator.
+
 ## ANTICIPATED-QUESTIONS BANK
 
 Generate a **ranked 12–18 questions this specific demo will provoke** (likelihood ×
@@ -83,7 +101,10 @@ loses the room. Guarantee coverage of: why-an-agent · built-today-vs-preexistin
 DQ question) · clinical trust & safety / human-in-the-loop · HIPAA/PHI · scale &
 workflow fit (who pushes the button) · real-EHR integration reality · eval/correctness
 · cost & latency · failure modes · moat vs Abridge shipping it in a week · impact at
-scale · the hostile "isn't this just [X] with extra steps?".
+scale · the hostile "isn't this just [X] with extra steps?" · **moat as models improve**
+(does the product get better as Claude does?) · **augment vs replace** (where's the
+human?) · **provenance / trust** (can a clinician trace *why*?) · **why an agent, not a
+scripted workflow** (the inverse question).
 
 ## RED-TEAM PASS
 
