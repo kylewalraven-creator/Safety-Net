@@ -9,6 +9,10 @@ original finding is **UNCONFIRMED** and is escalated, never silently closed.
 
 > "The report was right. The system around it failed. We built the system."
 
+> **Working on this?** Start with [`CLAUDE.md`](CLAUDE.md) and
+> [`docs/build-status.md`](docs/build-status.md) (current status, decisions, next
+> steps). The live demo is scripted in [`docs/demo-runbook.md`](docs/demo-runbook.md).
+
 ## Architecture (two sentences)
 
 A deterministic, code-orchestrated backlog sweep loads reports and runs a
