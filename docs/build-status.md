@@ -6,6 +6,12 @@ This is the continuity doc for a fresh session. It captures what exists, what's
 been verified, the decisions made (and why), and what's left. Pair it with
 `CLAUDE.md` (invariants + quickstart) and `docs/demo-runbook.md` (the demo).
 
+> **Scope / headline.** The repo's current **headline build and canonical demo is
+> Whole-Chart Review** (the most recent pivot; script `docs/demo-script.md`, UI
+> `ui/render_chart.py`). This handoff documents the original **radiology Safety
+> Net**, now the **retained fallback** — the status below is still accurate for it.
+> Whole-chart status is in **"Whole-Chart Review — status"** just below.
+
 ## Current state — built & verified
 
 The full first slice from `docs/master-blueprint.md` §5 is implemented. Verified
@@ -32,6 +38,24 @@ end-to-end on a machine with a real key:
 Commit sequence on the branch: scaffold → docs → models → client/prompts →
 pipeline → mcp → data → ui → scripts/tests → **temperature fix** → **cache** →
 (this handoff). Deep's synthetic FHIR dataset commit also sits on the branch.
+
+## Whole-Chart Review — status (headline build)
+
+The pivot workflow (net-new, on the same engine) is built and self-verifies
+**offline** (no key needed). Verified in this repo:
+
+- **`python -m safety_net.eval_harness`: gate PASS** — precision **1.0** / recall
+  **1.0** on the ground-truth manifest, **9/9 citations** validate as exact
+  substrings, and every live-set check passes (H4 → UNCONFIRMED/High, H1 surfaces,
+  H_SUPPRESS suppressed as CONFIRMED_ADDRESSED cited to the PCP letter).
+- **`python -m safety_net.chart_review --use-cache`: 4 threads surfaced, 1 cleared**
+  — nodule / apixaban / blood cultures / creatinine surface; the colonoscopy
+  look-alike is correctly suppressed (closed as "lower endoscopy" in the PCP letter).
+- **`tests/test_whole_chart.py`: 13/13 pass** (no key; `test_offline.py` 8/8).
+- **Live heroes:** H4 (held apixaban never restarted) + H_SUPPRESS (colonoscopy);
+  H1/H2/H3 precompute. Offline cache committed in `data/chart/cache/`.
+- **Contract:** Section 3 of `models.py` (additive; Sections 1–2 untouched, so the
+  radiology fallback still runs). Pipeline is in the `CLAUDE.md` pivot section.
 
 ## Decisions & rationale (don't "fix" these without reading)
 
@@ -64,7 +88,8 @@ pipeline → mcp → data → ui → scripts/tests → **temperature fix** → *
   Approve button reveals the audit line client-side, while the real
   `approve_action` + `AuditEvent` run in Python at render time. Not a server app —
   and not a dashboard (the aggregate is a one-line bookend, by design).
-- **MCP server** is a thin wrapper (7 tools), off the live demo path.
+- **MCP server** is a thin wrapper (12 tools — 7 Safety Net + 5 whole-chart), off
+  the live demo path.
 - **Filler** is 6 normal reports (sweep count = 10 total). Pad `data/filler/` if a
   bigger "swept N" number is wanted; it's cosmetic and needs no reconciliation.
 

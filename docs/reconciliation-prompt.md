@@ -105,7 +105,7 @@ OUTPUT:
 
 ## Dropping it in (implementation notes)
 
-- **Model / settings.** Opus 4.8, temperature ~0.0–0.2 for consistency. One call per open recommendation, with its candidate studies from the candidate-match step.
+- **Model / settings.** Opus 4.8. **Do not send `temperature`** — `claude-opus-4-8` rejects it (HTTP 400); the engine omits it (`client._request_params` / `_NO_TEMPERATURE_MODELS`) and relies on the model default. One call per open recommendation, with its candidate studies from the candidate-match step.
 - **Parsing.** Expect a single JSON object; strip any stray fences defensively before `JSON.parse`. The `axes[*].evidence[*].quote` strings are verbatim from the source — string-match them back into the report text to drive the highlight in the reasoning trace. `escalation.question` is the text for the "needs human review" beat. `closure_state` drives the state machine.
 - **Rendering the trace.** JSON-only output is the robust choice for parsing; the tradeoff is you don't get free "streaming thoughts." Mitigation: the per-axis `reason` fields are written to be display-ready, so render them into the trace as they parse (axis → result → reason → highlighted evidence) and it reads like live reasoning.
 - **Demo mapping.** Case A should return `UNCONFIRMED` → `escalate` + question (the hero beat). Case B should return `SUPERSEDES` → `superseded`, no action (the false-alarm-suppression beat). Verify both before the freeze.

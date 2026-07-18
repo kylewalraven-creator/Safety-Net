@@ -28,7 +28,7 @@ Freeze the schema (doc 01) before anything else so steps run in parallel against
 
 **Step 0 — Branch.** Create a branch off the working Safety Net build. Keep `main`/Safety Net runnable as the fallback demo. *Done when:* Safety Net still runs from its entry point on the branch.
 
-**Step 1 — Generate the synthetic chart.** Produce the `ChartBundle` per doc 02. The two live heroes (H1, H_SUPPRESS) use the pinned verbatim strings exactly; secondaries (H2, H3, H4) and filler to guidance. Emit as data files (JSON per the `Note` schema) plus a human-readable dump. *Done when:* all pinned strings from doc 02 are present verbatim; filler is clean (no unplanned unreconciled threads); a domain read passes plausibility.
+**Step 1 — Generate the synthetic chart.** Produce the `ChartBundle` per doc 02. The live heroes (H4, H_SUPPRESS) and the bridge (H1) use the pinned verbatim strings exactly; secondaries (H2, H3) and filler to guidance. Emit as data files (JSON per the `Note` schema) plus a human-readable dump. *Done when:* all pinned strings from doc 02 are present verbatim; filler is clean (no unplanned unreconciled threads); a domain read passes plausibility.
 
 **Step 2 — Ingestion + widened extraction (Haiku).** Load notes → run extraction → emit `ExtractedSignal[]`. Enforce that every `verbatim_excerpt` is a substring of its source body (reject + retry on failure). Enforce consistent `entity` keys. *Done when:* extraction recovers all planted-dot signals with the canonical entities from the manifest, and all excerpts validate.
 
@@ -38,7 +38,7 @@ Freeze the schema (doc 01) before anything else so steps run in parallel against
 
 **Step 5 — Grounding, ranking, surfacing.** Run citation validation on every finding (reject any with a non-matching `presence` excerpt). Rank by `risk_weight * confidence`. Apply `ABSTAIN_THRESHOLD` (0.6) and `TOP_N` (4); populate `findings` vs `cleared`. *Done when:* H_SUPPRESS lands in `cleared` with a reason; surfaced set contains no false positives.
 
-**Step 6 — Action drafting + MCP wrapper.** Draft `suggested_action` for surfaced High/Medium findings. Expose sweep/reconcile as FastMCP tools, off the live path. *Done when:* H1 has a sensible addendum action citing the CT note; MCP tools callable but not on the demo path.
+**Step 6 — Action drafting + MCP wrapper.** Draft `suggested_action` for surfaced High/Medium findings. Expose sweep/reconcile as FastMCP tools, off the live path. *Done when:* H4 has the live-approved clarify/restart-apixaban action and H1 a sensible addendum citing the CT note; MCP tools callable but not on the demo path.
 
 **Step 7 — Eval harness (new — the self-verification gate).** See spec below. *Done when:* the harness runs green on the live-set gate.
 

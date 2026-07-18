@@ -9,9 +9,12 @@ original finding is **UNCONFIRMED** and is escalated, never silently closed.
 
 > "The report was right. The system around it failed. We built the system."
 
-> **Working on this?** Start with [`CLAUDE.md`](CLAUDE.md) and
-> [`docs/build-status.md`](docs/build-status.md) (current status, decisions, next
-> steps). The live demo is scripted in [`docs/demo-runbook.md`](docs/demo-runbook.md).
+> **Working on this?** Start with [`CLAUDE.md`](CLAUDE.md). The **headline build
+> and canonical demo is Whole-Chart Review**, scripted in
+> [`docs/demo-script.md`](docs/demo-script.md) (see the **Whole-Chart Review**
+> section below). The original radiology Safety Net is the retained fallback —
+> handoff in [`docs/build-status.md`](docs/build-status.md), runbook
+> [`docs/demo-runbook.md`](docs/demo-runbook.md).
 
 ## Built during the hackathon (July 18, 2026)
 
