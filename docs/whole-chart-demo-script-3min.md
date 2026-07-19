@@ -49,7 +49,7 @@ Nodule and cultures are ~one line each; **apixaban and creatinine get the air.**
 ### Cold open — discharge is the start, not the end (0:00–0:18)
 *[Show: cached `whole_chart.html` at the top — header + meta strip. Never a live run.]*
 
-> ⟨MD-voice⟩ "When I discharge a patient after two weeks in the hospital, that's not the finish line — it's the *start* of their journey home. But the discharge summary gets written *forward* from today's problem list. Nobody re-reads all fourteen days — every note, every lab, every consult — at the one moment it matters most. Safety Net did."
+> ⟨MD-voice⟩ "When a clinician discharges a patient after two weeks in the hospital, that's not the finish line — it's the *start* of their journey home. But the discharge summary gets written *forward* from today's problem list. Nobody re-reads all fourteen days — every note, every lab, every consult — at the one moment it matters most. Safety Net did. What you're seeing is an actionable worklist representing the follow-up actions a clinician would peerfom in SaeftyNet."
 >
 > *[Non-MD alternate: "When a physician discharges a patient after two weeks, that's not the finish line — it's the start of the journey home…"]*
 
