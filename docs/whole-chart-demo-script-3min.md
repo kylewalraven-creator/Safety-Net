@@ -95,7 +95,7 @@ Nodule and cultures are ~one line each; **apixaban and creatinine get the air.**
 ### How it works + why you can trust it (2:28–2:52)
 *[Show: gesture at the validation footer — precision 1.0 · 9/9 · 0 hallucinated.]*
 
-> "Under the hood: Haiku extracts every signal, deterministic code threads them into entities across the timeline, and Opus reasons about each one against the discharge documents — with every quote validated as an exact substring of the chart before you see it: nine of nine, zero hallucinated. It reconciles documentation; it never diagnoses. We measured it against hand-authored ground truth — precision one-point-oh, recall one-point-oh. And because the reasoning *is* the model, it gets sharper every time Claude does. It's one engine — point it at any record, any handoff, any specialty."
+> "Under the hood: Haiku extracts every signal, deterministic code threads them into entities across the timeline, and Opus reasons about each one against the discharge documents — with every quote validated as an exact substring of the chart before you see it. It reconciles documentation; it never diagnoses. We measured it against hand-authored ground truth — measuring precision and recall. And because the reasoning *is* the model, it gets sharper every time Claude does. It's one engine — point it at any record, any handoff, any specialty."
 
 ### Close (2:52–3:00)
 *[Stop moving. Look up. Deliver clean, then stop talking.]*
