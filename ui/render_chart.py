@@ -212,7 +212,7 @@ def _sparkline(pts: list[tuple[int, float]]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Action (human-gated) — first finding is live-approvable; rest are queued
+# Action (human-gated) — every surfaced finding is live-approvable on stage
 # ---------------------------------------------------------------------------
 
 
@@ -454,7 +454,7 @@ def build_html(result: ChartReviewResult, bundle: ChartBundle, stats: dict) -> s
         wl += [_worklist_cleared_row(f, active=(f.thread_id == first_id and not surfaced)) for f in cleared]
 
     details = [
-        _detail_surfaced(f, i + 1, len(surfaced), shown=(f.thread_id == first_id), live=(i == 0))
+        _detail_surfaced(f, i + 1, len(surfaced), shown=(f.thread_id == first_id), live=True)
         for i, f in enumerate(surfaced)
     ]
     details += [_detail_cleared(f, shown=(f.thread_id == first_id and not surfaced)) for f in cleared]
